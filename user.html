@@ -17,25 +17,14 @@
       --muted-text: #9ca3af;
     }
 
-    .light-theme {
-      --bg-color: #eef2ff;
-      --text-color: #111827;
-      --sidebar-bg: rgba(255, 255, 255, 0.96);
-      --card-bg: rgba(255, 255, 255, 0.96);
-      --card-border: #e5e7eb;
-      --button-bg: #4f46e5;
-      --button-text: #f9fafb;
-      --bar-bg: #e5e7eb;
-      --muted-text: #6b7280;
-    }
-
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
       font-family: Arial, sans-serif;
       background-color: var(--bg-color);
-      /* daha fazla yıldız */
+      color: var(--text-color);
+      /* yıldızlar yoğun */
       background-image:
         radial-gradient(1px 1px at 10px 20px, rgba(255,255,255,0.8), transparent 50%),
         radial-gradient(1px 1px at 40px 60px, rgba(255,255,255,0.6), transparent 50%),
@@ -47,15 +36,8 @@
         radial-gradient(1.2px 1.2px at 300px 220px, rgba(255,255,255,0.8), transparent 50%),
         radial-gradient(1px 1px at 320px 40px, rgba(255,255,255,0.5), transparent 50%);
       background-size: 260px 260px;
-      color: var(--text-color);
       min-height: 100vh;
       display: flex;
-      transition: 0.4s;
-    }
-
-    body.light-theme {
-      background-color: #eef2ff;
-      background-image: none;
     }
 
     .sidebar {
@@ -76,33 +58,6 @@
     .sidebar-sub {
       font-size: 12px;
       opacity: 0.8;
-    }
-
-    .sidebar-controls {
-      display: flex;
-      gap: 8px;
-      margin-top: 10px;
-      flex-wrap: wrap;
-    }
-
-    .sidebar button {
-      padding: 6px 10px;
-      border: none;
-      border-radius: 999px;
-      background: var(--button-bg);
-      color: var(--button-text);
-      cursor: pointer;
-      font-size: 13px;
-      transition: 0.3s;
-    }
-
-    .sidebar button:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.9);
-    }
-
-    .lang-btn {
-      font-size: 18px;
     }
 
     .menu {
@@ -130,7 +85,7 @@
     }
 
     .menu-item:hover {
-      background: rgba(148, 163, 184, 0.25);
+      background: rgba(148, 163, 184, 0.3);
       opacity: 1;
     }
 
@@ -164,13 +119,6 @@
       font-size: 14px;
     }
 
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-      margin: 24px 0;
-    }
-
     .card {
       background: var(--card-bg);
       border-radius: 18px;
@@ -180,6 +128,7 @@
         0 0 0 1px var(--card-border);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
+      margin-top: 18px;
     }
 
     .card h2 {
@@ -187,48 +136,56 @@
       font-size: 18px;
     }
 
-    .card h2 span.badge {
-      font-size: 11px;
-      padding: 3px 7px;
-      border-radius: 999px;
-      border: 1px solid var(--card-border);
+    /* Sayaçlar */
+    .counter-box {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .counter-item {
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 15px;
+      padding: 15px 22px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+      min-width: 150px;
+      text-align: center;
+    }
+
+    .counter-label {
+      font-size: 12px;
       color: var(--muted-text);
-      margin-left: 6px;
+      margin-bottom: 4px;
     }
 
-    .card p {
-      margin: 0;
-      opacity: 0.9;
-      font-size: 13px;
+    .counter-value {
+      font-size: 32px;
+      font-weight: bold;
+      color: #38bdf8;
     }
 
+    /* Statü barları (sadece görsel) */
     .status-section {
       max-width: 700px;
       margin-top: 8px;
     }
 
-    .status-section h2 {
-      margin-bottom: 15px;
-      font-size: 20px;
-    }
-
     .status-row {
-      margin-bottom: 18px;
+      margin-bottom: 14px;
     }
 
     .status-label-line {
       display: flex;
       justify-content: space-between;
       font-size: 13px;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
-
-    .status-label-left { opacity: 0.9; }
-    .status-label-right { opacity: 0.7; font-family: monospace; }
 
     .status-bar-outer {
       width: 100%;
-      height: 12px;
+      height: 10px;
       border-radius: 999px;
       background: var(--bar-bg);
       overflow: hidden;
@@ -241,6 +198,7 @@
       border-radius: 999px;
     }
 
+    /* Profil */
     .form-group {
       margin-bottom: 10px;
       font-size: 13px;
@@ -251,78 +209,27 @@
       margin-bottom: 4px;
     }
 
-    .form-group select,
     .form-group input,
     .form-group textarea {
       width: 100%;
       padding: 8px 10px;
       border-radius: 8px;
       border: 1px solid var(--card-border);
-      background: var(--card-bg);
+      background: rgba(15, 23, 42, 0.9);
       color: var(--text-color);
-      outline: none;
       font-size: 13px;
+      outline: none;
+    }
+
+    .form-group textarea {
+      min-height: 70px;
       resize: vertical;
     }
 
-    .form-group select:focus,
-    .form-group input:focus,
-    .form-group textarea:focus {
-      border-color: #a855f7;
-      box-shadow: 0 0 0 1px rgba(168, 85, 247, 0.7);
-    }
-
-    .request-actions {
-      margin-top: 10px;
-      text-align: right;
-    }
-
-    .request-actions button {
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: none;
-      background: var(--button-bg);
-      color: var(--button-text);
-      cursor: pointer;
-      font-size: 13px;
-    }
-
-    .request-status-msg {
-      margin-top: 8px;
-      font-size: 13px;
-      min-height: 16px;
-    }
-
-    .request-status-msg.success { color: #bbf7d0; }
-    .request-status-msg.error   { color: #fecaca; }
-
-    .request-section {
-      display: none;
-      margin-top: 8px;
-    }
-
-    .request-section.active {
-      display: block;
-    }
-
-    .request-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-      margin-top: 12px;
-    }
-
-    .request-table th,
-    .request-table td {
-      padding: 8px 10px;
-      border-bottom: 1px solid rgba(148, 163, 184, 0.3);
-    }
-
-    .request-summary {
-      max-width: 260px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    .form-group input[readonly],
+    .form-group textarea[readonly] {
+      opacity: 0.85;
+      cursor: default;
     }
 
     footer {
@@ -342,177 +249,118 @@
 
 <aside class="sidebar">
   <div>
-    <div class="sidebar-logo" id="logoText">👤 Kullanıcı Paneli</div>
-    <div class="sidebar-sub" id="logoSubText">Site yönetim istekleri buradan gönderilir</div>
-
-    <div class="sidebar-controls">
-      <button id="langBtn" class="lang-btn">🇹🇷 / 🇬🇧</button>
-      <button id="themeBtn">Tema</button>
-    </div>
+    <div class="sidebar-logo">👤 Kullanıcı Paneli</div>
+    <div class="sidebar-sub">Bu panelde istatistik ve profil bilgilerinizi görürsünüz.</div>
   </div>
 
   <nav class="menu">
-    <div class="menu-item active">
+    <div class="menu-item active" data-section="dashboard">
       <span class="icon">🏠</span>
-      <span id="menuDashboard">Panel</span>
+      <span>Panel</span>
     </div>
-    <div class="menu-item">
+    <div class="menu-item" data-section="profile">
       <span class="icon">👤</span>
-      <span id="menuProfile">Profilim</span>
+      <span>Profilim</span>
     </div>
-    <div class="menu-item">
+    <div class="menu-item" data-section="logout">
       <span class="icon">🚪</span>
-      <span id="menuLogout">Çıkış</span>
+      <span>Çıkış</span>
     </div>
   </nav>
 
   <div class="menu-footer">
-    Bu panel, ana sitenizin yönetim isteklerini admin’e iletmek için kullanılır.
+    İstatistik ve profil bilgileriniz admin tarafından yönetilir.
   </div>
 </aside>
 
 <div class="content">
   <header>
-    <h1 id="userTitle" data-lang="tr">Hoş geldiniz!</h1>
-    <p id="userSubtitle">Bu panelden siteniz için yönetim istekleri gönderebilirsiniz.</p>
+    <h1 id="userTitle">Hoş geldiniz!</h1>
+    <p id="userSubtitle">Admin tarafından atanan istatistiklerinizi ve profil bilgilerinizi buradan görüntüleyebilirsiniz.</p>
   </header>
 
-  <!-- Özet kartlar (istatistikler) -->
-  <section class="cards">
-    <div class="card">
-      <h2 id="card1Title">Site İstatistikleri <span class="badge">Özet</span></h2>
-      <p id="card1Text">Bugünkü ziyaretçi, toplam ziyaretçi, kayıtlı kullanıcı ve oturum bilgilerini admin’e iletebilirsiniz.</p>
-    </div>
-    <div class="card">
-      <h2 id="card2Title">Duyuru & Bakım</h2>
-      <p id="card2Text">Yeni duyuru yayınlama veya bakım modunu aç/kapatma isteği gönderebilirsiniz.</p>
-    </div>
-    <div class="card">
-      <h2 id="card3Title">İstek Takibi</h2>
-      <p id="card3Text">Gönderdiğiniz site yönetim isteklerinin durumlarını aşağıdan takip edin.</p>
-    </div>
+  <!-- Panel (gösterge + statü) -->
+  <section id="dashboardSection">
+    <section class="card" style="max-width:620px;">
+      <h2>📈 İstatistik Göstergesi</h2>
+      <div class="counter-box">
+        <div class="counter-item">
+          <div class="counter-label">Toplam Ziyaretçi</div>
+          <div class="counter-value" id="counterTotalVisitors">0</div>
+        </div>
+        <div class="counter-item">
+          <div class="counter-label">Aktif Oturum</div>
+          <div class="counter-value" id="counterActiveSessions">0</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card status-section">
+      <h2>Statü Durumu</h2>
+
+      <div class="status-row">
+        <div class="status-label-line">
+          <span>Sunucu</span><span>99.9%</span>
+        </div>
+        <div class="status-bar-outer">
+          <div class="status-bar-inner"></div>
+        </div>
+      </div>
+
+      <div class="status-row">
+        <div class="status-label-line">
+          <span>Bağlantı</span><span>99.9%</span>
+        </div>
+        <div class="status-bar-outer">
+          <div class="status-bar-inner"></div>
+        </div>
+      </div>
+
+      <div class="status-row">
+        <div class="status-label-line">
+          <span>Veritabanı</span><span>99.9%</span>
+        </div>
+        <div class="status-bar-outer">
+          <div class="status-bar-inner"></div>
+        </div>
+      </div>
+    </section>
   </section>
 
-  <!-- Statü barları (sistemin genel durumu, görsel) -->
-  <section class="status-section">
-    <h2 id="statusTitle">Statü Durumu</h2>
+  <!-- Profilim -->
+  <section id="profileSection" style="display:none;">
+    <section class="card" style="max-width:620px;">
+      <h2>Profil Bilgileri</h2>
 
-    <div class="status-row">
-      <div class="status-label-line">
-        <span class="status-label-left" id="status1Label">Sunucu</span>
-        <span class="status-label-right">99.9%</span>
-      </div>
-      <div class="status-bar-outer"><div class="status-bar-inner"></div></div>
-    </div>
-
-    <div class="status-row">
-      <div class="status-label-line">
-        <span class="status-label-left" id="status2Label">Bağlantı</span>
-        <span class="status-label-right">99.9%</span>
-      </div>
-      <div class="status-bar-outer"><div class="status-bar-inner"></div></div>
-    </div>
-
-    <div class="status-row">
-      <div class="status-label-line">
-        <span class="status-label-left" id="status3Label">Veritabanı</span>
-        <span class="status-label-right">99.9%</span>
-      </div>
-      <div class="status-bar-outer"><div class="status-bar-inner"></div></div>
-    </div>
-  </section>
-
-  <!-- Site Yönetim İsteği Formu -->
-  <section class="card" style="max-width: 720px; margin-top:25px;">
-    <h2>Site Yönetim İsteği <span class="badge">Yeni İstek</span></h2>
-
-    <div class="form-group">
-      <label for="requestType">İstek Tipi</label>
-      <select id="requestType">
-        <option value="">Seçiniz...</option>
-        <option value="stats">İstatistik Güncelleme</option>
-        <option value="announcement">Yeni Duyuru Yayınla</option>
-        <option value="maintenance">Bakım Modu Aç/Kapat</option>
-      </select>
-    </div>
-
-    <!-- İstatistik Güncelleme -->
-    <div id="requestStatsSection" class="request-section">
       <div class="form-group">
-        <label for="visitorsToday">Bugünkü ziyaretçi sayısı</label>
-        <input id="visitorsToday" type="number" min="0" placeholder="Örn: 123">
+        <label>Ad Soyad</label>
+        <input id="profileName" type="text" readonly>
       </div>
-      <div class="form-group">
-        <label for="visitorsTotal">Toplam ziyaretçi</label>
-        <input id="visitorsTotal" type="number" min="0" placeholder="Örn: 8450">
-      </div>
-      <div class="form-group">
-        <label for="totalUsers">Toplam kayıtlı kullanıcı</label>
-        <input id="totalUsers" type="number" min="0" placeholder="Örn: 320">
-      </div>
-      <div class="form-group">
-        <label for="activeSessions">Aktif oturum sayısı</label>
-        <input id="activeSessions" type="number" min="0" placeholder="Örn: 12">
-      </div>
-      <div class="form-group">
-        <label for="lastDeploy">Son deploy tarihi (tarih / saat)</label>
-        <input id="lastDeploy" type="text" placeholder="Örn: 12.12.2025 14:32">
-      </div>
-    </div>
 
-    <!-- Yeni Duyuru -->
-    <div id="requestAnnouncementSection" class="request-section">
       <div class="form-group">
-        <label for="announcementTitle">Duyuru başlığı</label>
-        <input id="announcementTitle" type="text" placeholder="Örn: Yeni sürüm yayında!">
+        <label>E-posta</label>
+        <input id="profileEmail" type="email" readonly>
       </div>
+
       <div class="form-group">
-        <label for="announcementMessage">Duyuru metni</label>
-        <textarea id="announcementMessage" rows="3" placeholder="Kullanıcılara gösterilecek duyuru metni..."></textarea>
+        <label>Telefon Numarası</label>
+        <input id="profilePhone" type="text" readonly>
       </div>
-    </div>
 
-    <!-- Bakım Modu -->
-    <div id="requestMaintenanceSection" class="request-section">
       <div class="form-group">
-        <label for="maintenanceMode">Bakım modu durumu</label>
-        <select id="maintenanceMode">
-          <option value="">Seçiniz...</option>
-          <option value="open">Bakım Modunu Aç</option>
-          <option value="close">Bakım Modunu Kapat</option>
-        </select>
+        <label>Web Site</label>
+        <input id="profileWebsite" type="text" readonly>
       </div>
+
       <div class="form-group">
-        <label for="maintenanceNote">Not (isteğe bağlı)</label>
-        <textarea id="maintenanceNote" rows="2" placeholder="Örn: 01:00 - 03:00 arasında bakım planlanıyor."></textarea>
+        <label>Dükkan Adresi</label>
+        <textarea id="profileAddress" readonly></textarea>
       </div>
-    </div>
-
-    <div class="request-actions">
-      <button id="requestSendBtn">İstek Gönder</button>
-    </div>
-
-    <div id="requestStatusMsg" class="request-status-msg"></div>
-  </section>
-
-  <!-- Gönderilen İstekler Tablosu -->
-  <section class="card" style="max-width: 900px; margin-top:20px;">
-    <h2>İsteklerim <span class="badge">Durum Takibi</span></h2>
-    <table class="request-table">
-      <thead>
-        <tr>
-          <th>Tip</th>
-          <th>Açıklama</th>
-          <th>Durum</th>
-          <th>Tarih</th>
-        </tr>
-      </thead>
-      <tbody id="requestTableBody"></tbody>
-    </table>
+    </section>
   </section>
 
   <footer>
-    © 2025 Site Yönetim Paneli – Tüm istekler admin tarafına iletilir ve Firestore’da saklanır.
+    © 2025 Site Yönetim Paneli – Bilgiler admin tarafından Firestore üzerinden yönetilir.
   </footer>
 </div>
 
@@ -520,11 +368,8 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
   import {
     getFirestore,
-    collection,
-    addDoc,
-    getDocs,
-    query,
-    where
+    doc,
+    getDoc
   } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -533,8 +378,7 @@
     projectId: "nrussystem",
     storageBucket: "nrussystem.firebasestorage.app",
     messagingSenderId: "907157259049",
-    appId: "1:907157259049:web:7a4f4b547803345ce92d38",
-    measurementId: "G-95XV7GLF6P"
+    appId: "1:907157259049:web:7a4f4b547803345ce92d38"
   };
 
   const app = initializeApp(firebaseConfig);
@@ -544,332 +388,102 @@
   let currentUser = null;
   try {
     const raw = localStorage.getItem('currentUser');
-    if (!raw) window.location.href = 'index.html';
-    else currentUser = JSON.parse(raw);
+    if (!raw) {
+      window.location.href = 'index.html';
+    } else {
+      currentUser = JSON.parse(raw);
+      if (!currentUser.id) {
+        window.location.href = 'index.html';
+      }
+    }
   } catch (e) {
     console.error(e);
     window.location.href = 'index.html';
   }
 
-  // DOM referansları
-  const themeBtn   = document.getElementById('themeBtn');
-  const langBtn    = document.getElementById('langBtn');
-  const logoText   = document.getElementById('logoText');
-  const logoSubText= document.getElementById('logoSubText');
-  const userTitle    = document.getElementById('userTitle');
-  const userSubtitle = document.getElementById('userSubtitle');
-
-  const card1Title = document.getElementById('card1Title');
-  const card1Text  = document.getElementById('card1Text');
-  const card2Title = document.getElementById('card2Title');
-  const card2Text  = document.getElementById('card2Text');
-  const card3Title = document.getElementById('card3Title');
-  const card3Text  = document.getElementById('card3Text');
-
-  const statusTitle  = document.getElementById('statusTitle');
-  const status1Label = document.getElementById('status1Label');
-  const status2Label = document.getElementById('status2Label');
-  const status3Label = document.getElementById('status3Label');
-
-  const menuDashboard = document.getElementById('menuDashboard');
-  const menuProfile   = document.getElementById('menuProfile');
-  const menuLogout    = document.getElementById('menuLogout');
-
-  const requestTypeSelect = document.getElementById('requestType');
-  const requestStatsSection        = document.getElementById('requestStatsSection');
-  const requestAnnouncementSection = document.getElementById('requestAnnouncementSection');
-  const requestMaintenanceSection  = document.getElementById('requestMaintenanceSection');
-
-  const visitorsTodayInput   = document.getElementById('visitorsToday');
-  const visitorsTotalInput   = document.getElementById('visitorsTotal');
-  const totalUsersInput      = document.getElementById('totalUsers');
-  const activeSessionsInput  = document.getElementById('activeSessions');
-  const lastDeployInput      = document.getElementById('lastDeploy');
-
-  const announcementTitleInput   = document.getElementById('announcementTitle');
-  const announcementMessageInput = document.getElementById('announcementMessage');
-
-  const maintenanceModeSelect = document.getElementById('maintenanceMode');
-  const maintenanceNoteInput  = document.getElementById('maintenanceNote');
-
-  const requestSendBtn   = document.getElementById('requestSendBtn');
-  const requestStatusMsg = document.getElementById('requestStatusMsg');
-
-  const requestTableBody = document.getElementById('requestTableBody');
+  const userTitle   = document.getElementById('userTitle');
+  const userSubtitle= document.getElementById('userSubtitle');
 
   if (currentUser && currentUser.name) {
     userTitle.textContent = `Hoş geldiniz, ${currentUser.name}!`;
   }
 
-  function getLang() {
-    return userTitle.getAttribute('data-lang') || 'tr';
+  // Sayaçlar
+  const counterTotalVisitors   = document.getElementById('counterTotalVisitors');
+  const counterActiveSessions  = document.getElementById('counterActiveSessions');
+
+  function animateValue(element, start, end, duration) {
+    let startTime = null;
+    function step(timestamp) {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      const value = Math.floor(start + (end - start) * progress);
+      element.textContent = value;
+      if (progress < 1) window.requestAnimationFrame(step);
+    }
+    window.requestAnimationFrame(step);
   }
 
-  themeBtn.addEventListener('click', () => {
-    document.body.classList.toggle('light-theme');
-  });
+  // Profil alanları
+  const profileName    = document.getElementById('profileName');
+  const profileEmail   = document.getElementById('profileEmail');
+  const profilePhone   = document.getElementById('profilePhone');
+  const profileWebsite = document.getElementById('profileWebsite');
+  const profileAddress = document.getElementById('profileAddress');
 
-  langBtn.addEventListener('click', () => {
-    const currentLang = userTitle.getAttribute('data-lang');
+  async function loadUserData() {
+    try {
+      const ref = doc(db, 'users', currentUser.id);
+      const snap = await getDoc(ref);
+      if (!snap.exists()) return;
 
-    if (currentLang === 'tr') {
-      userTitle.textContent     = currentUser && currentUser.name
-        ? `Welcome, ${currentUser.name}!`
-        : 'Welcome!';
-      userSubtitle.textContent  = 'You can send site management requests to the admin using this panel.';
-      logoText.textContent      = '👤 User Panel';
-      logoSubText.textContent   = 'Send management requests for your site';
+      const data = snap.data();
 
-      card1Title.textContent    = 'Site Statistics';
-      card1Text.textContent     = 'You can send today/total visitors, registered users and sessions info to the admin.';
-      card2Title.textContent    = 'Announcement & Maintenance';
-      card2Text.textContent     = 'Request new announcement or toggle maintenance mode.';
-      card3Title.textContent    = 'Request Tracking';
-      card3Text.textContent     = 'Track the status of your site management requests below.';
+      // Sayaçlar
+      const totalVisitors  = Number(data.totalVisitors || 0);
+      const activeSessions = Number(data.activeSessions || 0);
 
-      statusTitle.textContent   = 'Status';
-      status1Label.textContent  = 'Server';
-      status2Label.textContent  = 'Connection';
-      status3Label.textContent  = 'Database';
+      animateValue(counterTotalVisitors, 0, totalVisitors, 1500);
+      animateValue(counterActiveSessions, 0, activeSessions, 1500);
 
-      menuDashboard.textContent = 'Dashboard';
-      menuProfile.textContent   = 'Profile';
-      menuLogout.textContent    = 'Logout';
+      // Profil
+      profileName.value    = data.name    || '';
+      profileEmail.value   = data.email   || '';
+      profilePhone.value   = data.phone   || '';
+      profileWebsite.value = data.website || '';
+      profileAddress.value = data.address || '';
 
-      userTitle.setAttribute('data-lang', 'en');
-      langBtn.innerHTML = '🇬🇧 / 🇹🇷';
-    } else {
-      userTitle.textContent     = currentUser && currentUser.name
-        ? `Hoş geldiniz, ${currentUser.name}!`
-        : 'Hoş geldiniz!';
-      userSubtitle.textContent  = 'Bu panelden siteniz için yönetim istekleri gönderebilirsiniz.';
-      logoText.textContent      = '👤 Kullanıcı Paneli';
-      logoSubText.textContent   = 'Site yönetim istekleri buradan gönderilir';
-
-      card1Title.textContent    = 'Site İstatistikleri';
-      card1Text.textContent     = 'Bugünkü ziyaretçi, toplam ziyaretçi, kayıtlı kullanıcı ve oturum bilgilerini admin’e iletebilirsiniz.';
-      card2Title.textContent    = 'Duyuru & Bakım';
-      card2Text.textContent     = 'Yeni duyuru yayınlama veya bakım modunu aç/kapatma isteği gönderebilirsiniz.';
-      card3Title.textContent    = 'İstek Takibi';
-      card3Text.textContent     = 'Gönderdiğiniz site yönetim isteklerinin durumlarını aşağıdan takip edin.';
-
-      statusTitle.textContent   = 'Statü Durumu';
-      status1Label.textContent  = 'Sunucu';
-      status2Label.textContent  = 'Bağlantı';
-      status3Label.textContent  = 'Veritabanı';
-
-      menuDashboard.textContent = 'Panel';
-      menuProfile.textContent   = 'Profilim';
-      menuLogout.textContent    = 'Çıkış';
-
-      userTitle.setAttribute('data-lang', 'tr');
-      langBtn.innerHTML = '🇹🇷 / 🇬🇧';
+    } catch (err) {
+      console.error('Kullanıcı verisi çekilirken hata:', err);
     }
-  });
+  }
+
+  // Menü – sekme değişimi
+  const dashboardSection = document.getElementById('dashboardSection');
+  const profileSection   = document.getElementById('profileSection');
 
   document.querySelectorAll('.menu-item').forEach(item => {
     item.addEventListener('click', () => {
+      const section = item.getAttribute('data-section');
+
       document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
       item.classList.add('active');
 
-      const label = item.querySelector('span:last-child').textContent.trim();
-      if (label === 'Çıkış' || label === 'Logout') {
+      if (section === 'dashboard') {
+        dashboardSection.style.display = 'block';
+        profileSection.style.display   = 'none';
+      } else if (section === 'profile') {
+        dashboardSection.style.display = 'none';
+        profileSection.style.display   = 'block';
+      } else if (section === 'logout') {
         try { localStorage.removeItem('currentUser'); } catch (e) {}
         window.location.href = 'index.html';
       }
     });
   });
 
-  function setRequestStatus(type, message) {
-    requestStatusMsg.classList.remove('success', 'error');
-    if (type) requestStatusMsg.classList.add(type);
-    requestStatusMsg.textContent = message || '';
-  }
-
-  function showRequestSection(type) {
-    requestStatsSection.classList.remove('active');
-    requestAnnouncementSection.classList.remove('active');
-    requestMaintenanceSection.classList.remove('active');
-
-    if (type === 'stats') requestStatsSection.classList.add('active');
-    if (type === 'announcement') requestAnnouncementSection.classList.add('active');
-    if (type === 'maintenance') requestMaintenanceSection.classList.add('active');
-  }
-
-  requestTypeSelect.addEventListener('change', () => {
-    showRequestSection(requestTypeSelect.value);
-    setRequestStatus('', '');
-  });
-
-  requestSendBtn.addEventListener('click', async () => {
-    const type = requestTypeSelect.value;
-    const lang = getLang();
-
-    if (!type) {
-      setRequestStatus('error', lang === 'tr'
-        ? 'Lütfen istek tipini seçin.'
-        : 'Please select a request type.');
-      return;
-    }
-
-    let payload = {};
-    if (type === 'stats') {
-      const vToday  = visitorsTodayInput.value.trim();
-      const vTotal  = visitorsTotalInput.value.trim();
-      const tUsers  = totalUsersInput.value.trim();
-      const aSess   = activeSessionsInput.value.trim();
-      const deploy  = lastDeployInput.value.trim();
-
-      if (!vToday || !vTotal || !tUsers || !aSess || !deploy) {
-        setRequestStatus('error', lang === 'tr'
-          ? 'Lütfen tüm istatistik alanlarını doldurun.'
-          : 'Please fill all statistics fields.');
-        return;
-      }
-
-      payload = {
-        visitorsToday: vToday,
-        visitorsTotal: vTotal,
-        totalUsers: tUsers,
-        activeSessions: aSess,
-        lastDeploy: deploy
-      };
-    } else if (type === 'announcement') {
-      const title = announcementTitleInput.value.trim();
-      const msg   = announcementMessageInput.value.trim();
-      if (!title || !msg) {
-        setRequestStatus('error', lang === 'tr'
-          ? 'Lütfen duyuru başlığı ve metnini doldurun.'
-          : 'Please fill announcement title and message.');
-        return;
-      }
-      payload = { title, message: msg };
-    } else if (type === 'maintenance') {
-      const mode = maintenanceModeSelect.value;
-      const note = maintenanceNoteInput.value.trim();
-      if (!mode) {
-        setRequestStatus('error', lang === 'tr'
-          ? 'Lütfen bakım modu durumunu seçin.'
-          : 'Please select maintenance mode.');
-        return;
-      }
-      payload = { mode, note };
-    }
-
-    setRequestStatus('', lang === 'tr'
-      ? 'İstek gönderiliyor...'
-      : 'Sending request...');
-
-    try {
-      const now = new Date();
-      const createdAt = now.toLocaleString('tr-TR');
-
-      await addDoc(collection(db, 'siteRequests'), {
-        userId: currentUser?.id || null,
-        userName: currentUser?.name || '',
-        userAccessKey: currentUser?.accessKey || '',
-        type,
-        payload,
-        status: 'Beklemede',
-        createdAt
-      });
-
-      setRequestStatus('success', lang === 'tr'
-        ? 'İstek gönderildi. Durumu aşağıdaki listeden takip edebilirsiniz.'
-        : 'Request sent. You can track it in the list below.');
-
-      // Formu temizle
-      if (type === 'stats') {
-        visitorsTodayInput.value  = '';
-        visitorsTotalInput.value  = '';
-        totalUsersInput.value     = '';
-        activeSessionsInput.value = '';
-        lastDeployInput.value     = '';
-      } else if (type === 'announcement') {
-        announcementTitleInput.value   = '';
-        announcementMessageInput.value = '';
-      } else if (type === 'maintenance') {
-        maintenanceModeSelect.value = '';
-        maintenanceNoteInput.value  = '';
-      }
-      requestTypeSelect.value = '';
-      showRequestSection('');
-
-      await loadMyRequests();
-    } catch (err) {
-      console.error(err);
-      setRequestStatus('error', lang === 'tr'
-        ? 'İstek gönderilirken bir hata oluştu.'
-        : 'An error occurred while sending the request.');
-    }
-  });
-
-  function summarizeRequest(docData) {
-    const type = docData.type;
-    const p = docData.payload || {};
-    if (type === 'stats') {
-      return `Ziy: ${p.visitorsToday}/${p.visitorsTotal}, Kullanıcı: ${p.totalUsers}, Oturum: ${p.activeSessions}`;
-    }
-    if (type === 'announcement') {
-      return `Duyuru: ${p.title || ''}`;
-    }
-    if (type === 'maintenance') {
-      if (p.mode === 'open')  return 'Bakım modunu AÇ';
-      if (p.mode === 'close') return 'Bakım modunu KAPAT';
-      return 'Bakım modu isteği';
-    }
-    return '';
-  }
-
-  function typeLabel(type, lang) {
-    if (lang === 'en') {
-      if (type === 'stats')        return 'Stats Update';
-      if (type === 'announcement') return 'New Announcement';
-      if (type === 'maintenance')  return 'Maintenance';
-    } else {
-      if (type === 'stats')        return 'İstatistik';
-      if (type === 'announcement') return 'Duyuru';
-      if (type === 'maintenance')  return 'Bakım Modu';
-    }
-    return type || '-';
-  }
-
-  async function loadMyRequests() {
-    requestTableBody.innerHTML = '';
-    try {
-      let q;
-      if (currentUser?.id) {
-        q = query(collection(db, 'siteRequests'), where('userId', '==', currentUser.id));
-      } else if (currentUser?.accessKey) {
-        q = query(collection(db, 'siteRequests'), where('userAccessKey', '==', currentUser.accessKey));
-      } else {
-        return;
-      }
-
-      const lang = getLang();
-      const snap = await getDocs(q);
-      snap.forEach(docSnap => {
-        const data = docSnap.data();
-        const tr = document.createElement('tr');
-        const tLabel = typeLabel(data.type, lang);
-        const summary = summarizeRequest(data);
-
-        tr.innerHTML = `
-          <td>${tLabel}</td>
-          <td><span class="request-summary" title="${summary.replace(/"/g, '&quot;')}">${summary}</span></td>
-          <td>${data.status || '-'}</td>
-          <td>${data.createdAt || '-'}</td>
-        `;
-        requestTableBody.appendChild(tr);
-      });
-    } catch (err) {
-      console.error('İstekleri çekerken hata:', err);
-    }
-  }
-
-  (async () => {
-    await loadMyRequests();
-  })();
+  // Sayfa açılınca veriyi yükle
+  loadUserData();
 </script>
 
 </body>
