@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Paneli</title>
+  <title>Admin Paneli - Site Yönetimi</title>
   <style>
     :root {
       --bg-color: #020617;
@@ -17,28 +17,14 @@
       --muted-text: #9ca3af;
     }
 
-    .light-theme {
-      --bg-color: #eef2ff;
-      --text-color: #111827;
-      --card-bg: rgba(255, 255, 255, 0.96);
-      --card-border: #e5e7eb;
-      --button-bg: #4f46e5;
-      --button-text: #f9fafb;
-      --input-bg: #eef2ff;
-      --input-border: #a5b4fc;
-      --muted-text: #6b7280;
-    }
-
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      color: var(--text-color);
       background-color: var(--bg-color);
+      color: var(--text-color);
+      /* yıldızlı arka plan */
       background-image:
         radial-gradient(1px 1px at 10px 20px, rgba(255,255,255,0.7), transparent 50%),
         radial-gradient(1px 1px at 40px 60px, rgba(255,255,255,0.4), transparent 50%),
@@ -46,68 +32,33 @@
         radial-gradient(2px 2px at 200px 120px, rgba(255,255,255,0.8), transparent 50%),
         radial-gradient(1px 1px at 250px 200px, rgba(255,255,255,0.6), transparent 50%);
       background-size: 250px 250px;
-      transition: 0.4s;
-    }
-
-    body.light-theme {
-      background-color: #eef2ff;
-      background-image: none;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
     header {
-      width: 100%;
       padding: 15px 25px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       background: rgba(15, 23, 42, 0.95);
-      box-shadow: 0 2px 18px rgba(15, 23, 42, 0.9);
-      border-bottom: 1px solid var(--card-border);
+      box-shadow: 0 2px 18px rgba(0, 0, 0, 0.6);
     }
 
-    .light-theme header {
-      background: rgba(255, 255, 255, 0.96);
-      box-shadow: 0 2px 18px rgba(15, 23, 42, 0.15);
-    }
-
-    .header-left h1 {
+    header h1 {
       margin: 0;
       font-size: 22px;
     }
 
-    .header-left p {
-      margin: 3px 0 0 0;
-      font-size: 13px;
-      opacity: 0.8;
-    }
-
-    .header-right {
-      display: flex;
-      gap: 10px;
-    }
-
-    button {
+    header button {
       padding: 8px 14px;
-      border-radius: 999px;
+      border-radius: 8px;
       border: none;
       background: var(--button-bg);
       color: var(--button-text);
       cursor: pointer;
       font-size: 13px;
-      transition: 0.3s;
-    }
-
-    button:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.9);
-    }
-
-    .lang-btn {
-      font-size: 18px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
     }
 
     main {
@@ -116,102 +67,75 @@
       max-width: 1100px;
       margin: 20px auto 30px;
       display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.2fr);
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: 20px;
     }
 
     .card {
       background: var(--card-bg);
-      border-radius: 20px;
-      padding: 20px;
+      border-radius: 18px;
+      padding: 18px 18px 16px;
       box-shadow:
-        0 18px 35px rgba(15, 23, 42, 0.9),
+        0 16px 32px rgba(15, 23, 42, 0.9),
         0 0 0 1px var(--card-border);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
     }
 
     .card h2 {
-      margin-top: 0;
-      margin-bottom: 12px;
+      margin: 0 0 10px 0;
       font-size: 18px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
     }
 
-    .card h2 span.badge {
-      font-size: 11px;
-      padding: 3px 7px;
-      border-radius: 999px;
-      border: 1px solid var(--card-border);
-      color: var(--muted-text);
-    }
-
-    .form-group {
-      margin-bottom: 12px;
-      text-align: left;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 4px;
-      font-size: 13px;
-    }
-
-    .form-group input,
-    .form-group select {
+    input, select, textarea {
       width: 100%;
-      padding: 9px 10px;
+      padding: 8px 10px;
       border-radius: 8px;
       border: 1px solid var(--input-border);
       background: var(--input-bg);
       color: var(--text-color);
-      font-size: 14px;
+      font-size: 13px;
+      margin-bottom: 8px;
       outline: none;
     }
 
-    .form-group input:focus,
-    .form-group select:focus {
+    textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+
+    input:focus, select:focus, textarea:focus {
       border-color: #a855f7;
       box-shadow: 0 0 0 1px rgba(168, 85, 247, 0.7);
     }
 
-    .form-actions {
-      margin-top: 10px;
-      text-align: right;
-    }
-
-    .form-actions button + button {
-      margin-left: 6px;
-    }
-
-    .status-msg {
-      margin-top: 8px;
+    button.primary {
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: none;
+      background: var(--button-bg);
+      color: var(--button-text);
+      cursor: pointer;
       font-size: 13px;
-      min-height: 16px;
-      white-space: pre-wrap;
-      word-break: break-word;
+      margin-top: 4px;
     }
 
-    .boost-table-wrapper {
-      width: 100%;
-      overflow-x: auto;
-      margin-top: 8px;
+    button.secondary {
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      background: transparent;
+      color: var(--muted-text);
+      cursor: pointer;
+      font-size: 13px;
+      margin-top: 4px;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
       font-size: 13px;
-    }
-
-    thead {
-      background: rgba(15, 23, 42, 0.8);
-    }
-
-    .light-theme thead {
-      background: rgba(243, 244, 246, 0.9);
+      margin-top: 8px;
     }
 
     th, td {
@@ -231,85 +155,18 @@
       background: rgba(15, 23, 42, 0.4);
     }
 
-    .light-theme tbody tr:hover {
-      background: rgba(243, 244, 246, 0.8);
-    }
-
     .actions button {
       padding: 4px 8px;
       font-size: 11px;
-      margin-right: 5px;
+      margin-right: 4px;
     }
 
-    .btn-secondary {
-      background: transparent;
-      color: var(--muted-text);
-      border: 1px solid var(--card-border);
-    }
-
-    /* BOOST Özel stil */
-    .boost-status-select {
-      padding: 4px 8px;
-      border-radius: 999px;
-      border: 1px solid var(--card-border);
-      background: rgba(15, 23, 42, 0.9);
-      color: var(--text-color);
-      font-size: 11px;
-    }
-
-    .light-theme .boost-status-select {
-      background: #f9fafb;
-    }
-
-    .boost-status-row {
-      font-size: 11px;
-      color: var(--muted-text);
-    }
-
-    .boost-link {
-      max-width: 150px;
-      display: inline-block;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .save-status-btn {
-      padding: 6px 12px;
-      font-size: 11px;
-      white-space: nowrap;
-      background: #facc15;
-      color: #1f2937;
-      font-weight: 600;
-      border-radius: 999px;
-    }
-
-    .boost-admin-toast {
-      margin-top: 10px;
-      padding: 8px 10px;
-      border-radius: 10px;
+    .status-msg {
+      margin-top: 6px;
       font-size: 12px;
-      display: none;
-    }
-
-    .boost-admin-toast.show { display: block; }
-    .boost-admin-toast.success {
-      background: rgba(22, 163, 74, 0.12);
-      border: 1px solid rgba(22, 163, 74, 0.6);
-      color: #bbf7d0;
-    }
-
-    .boost-admin-toast.error {
-      background: rgba(248, 113, 113, 0.12);
-      border: 1px solid rgba(248, 113, 113, 0.7);
-      color: #fecaca;
-    }
-
-    footer {
-      padding: 10px;
-      text-align: center;
-      font-size: 11px;
-      opacity: 0.7;
+      min-height: 16px;
+      color: var(--muted-text);
+      white-space: pre-wrap;
     }
 
     @media (max-width: 900px) {
@@ -320,90 +177,58 @@
 <body>
 
 <header>
-  <div class="header-left">
-    <h1 id="adminTitle" data-lang="tr">Admin Paneli</h1>
-    <p id="adminSubtitle">Buradan kullanıcıları ve boost isteklerini yönetebilirsiniz.</p>
-  </div>
-  <div class="header-right">
-    <button id="langBtn" class="lang-btn">🇹🇷 / 🇬🇧</button>
-    <button id="themeBtn">Tema</button>
-  </div>
+  <h1>Admin Paneli</h1>
+  <button onclick="logout()">Çıkış</button>
 </header>
 
 <main>
+  <!-- Sol: Kullanıcı ekleme + liste -->
   <section class="card">
-    <h2 id="formTitle">Kullanıcı Ekle <span class="badge">Kullanıcı Yönetimi</span></h2>
-
-    <div class="form-group">
-      <label id="labelName" for="nameInput">Ad Soyad</label>
-      <input id="nameInput" type="text" placeholder="Örn: Ali Yılmaz">
-    </div>
-
-    <div class="form-group">
-      <label id="labelEmail" for="emailInput">E-posta</label>
-      <input id="emailInput" type="email" placeholder="Örn: ali@example.com">
-    </div>
-
-    <div class="form-group">
-      <label id="labelRole" for="roleSelect">Rol</label>
-      <select id="roleSelect">
-        <option value="user">Kullanıcı</option>
-        <option value="admin">Admin</option>
-      </select>
-    </div>
-
-    <div class="form-actions">
-      <button id="addUserBtn">Ekle</button>
-      <button id="cancelEditBtn" class="btn-secondary" style="display:none;">İptal</button>
-    </div>
-
+    <h2>Kullanıcı Ekle</h2>
+    <input id="nameInput" placeholder="Ad Soyad">
+    <input id="emailInput" placeholder="E-posta">
+    <button class="primary" id="addUserBtn">Ekle</button>
     <div class="status-msg" id="formStatus"></div>
 
-    <hr style="margin:18px 0; opacity:0.3; border-color:var(--card-border);">
+    <hr style="margin:14px 0; opacity:0.3; border-color:var(--card-border);">
 
-    <h2 id="boostAdminTitle">Boost İstekleri <span class="badge">Canlı Talepler</span></h2>
-
-    <div class="boost-table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th id="thBoostUser">Kullanıcı</th>
-            <th id="thBoostPlatform">Platform</th>
-            <th id="thBoostService">Tür</th>
-            <th id="thBoostLink">Link</th>
-            <th id="thBoostStatus">Durum</th>
-            <th id="thBoostCreated">Tarih</th>
-            <th id="thBoostActions">İşlem</th>
-          </tr>
-        </thead>
-        <tbody id="boostTableBody"></tbody>
-      </table>
-    </div>
-
-    <div id="boostAdminStatusMsg" class="boost-admin-toast"></div>
-  </section>
-
-  <section class="card">
-    <h2 id="listTitle">Kullanıcı Listesi <span class="badge">Kayıtlı Hesaplar</span></h2>
-
+    <h2>Kullanıcılar</h2>
     <table>
       <thead>
         <tr>
-          <th id="thName">Ad Soyad</th>
-          <th id="thEmail">E-posta</th>
-          <th id="thRole">Rol</th>
-          <th id="thKey">Anahtar</th>
-          <th id="thActions">İşlemler</th>
+          <th>Ad</th>
+          <th>E-posta</th>
+          <th>Anahtar</th>
+          <th>İşlem</th>
         </tr>
       </thead>
       <tbody id="userTableBody"></tbody>
     </table>
   </section>
-</main>
 
-<footer>
-  Firestore ile kullanıcı ve boost yönetimi.
-</footer>
+  <!-- Sağ: Seçilen kullanıcıyı düzenle -->
+  <section class="card">
+    <h2>Seçili Kullanıcıyı Düzenle</h2>
+    <div id="editInfo" style="font-size:12px;color:var(--muted-text);margin-bottom:8px;">
+      Henüz kullanıcı seçilmedi.
+    </div>
+
+    <div id="editSection" style="display:none;">
+      <input id="editName" placeholder="Ad Soyad">
+      <input id="editEmail" placeholder="E-posta">
+      <input id="editPhone" placeholder="Telefon">
+      <input id="editWebsite" placeholder="Web Site">
+      <textarea id="editAddress" placeholder="Dükkan Adresi"></textarea>
+      <input id="editVisitors" type="number" min="0" placeholder="Toplam Ziyaretçi">
+      <input id="editSessions" type="number" min="0" placeholder="Aktif Oturum">
+
+      <button class="primary" id="saveEditBtn">Kaydet</button>
+      <button class="secondary" id="cancelEditBtn">İptal</button>
+
+      <div class="status-msg" id="editStatus"></div>
+    </div>
+  </section>
+</main>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
@@ -412,6 +237,7 @@
     collection,
     addDoc,
     getDocs,
+    getDoc,
     doc,
     updateDoc,
     deleteDoc
@@ -423,115 +249,35 @@
     projectId: "nrussystem",
     storageBucket: "nrussystem.firebasestorage.app",
     messagingSenderId: "907157259049",
-    appId: "1:907157259049:web:7a4f4b547803345ce92d38",
-    measurementId: "G-95XV7GLF6P"
+    appId: "1:907157259049:web:7a4f4b547803345ce92d38"
   };
 
   const app = initializeApp(firebaseConfig);
   const db  = getFirestore(app);
 
-  const themeBtn      = document.getElementById('themeBtn');
-  const langBtn       = document.getElementById('langBtn');
-  const adminTitle    = document.getElementById('adminTitle');
-  const adminSubtitle = document.getElementById('adminSubtitle');
-  const formTitle     = document.getElementById('formTitle');
-  const labelName     = document.getElementById('labelName');
-  const labelEmail    = document.getElementById('labelEmail');
-  const labelRole     = document.getElementById('labelRole');
-  const addUserBtn    = document.getElementById('addUserBtn');
-  const cancelEditBtn = document.getElementById('cancelEditBtn');
-  const formStatus    = document.getElementById('formStatus');
-  const listTitle     = document.getElementById('listTitle');
-  const thName        = document.getElementById('thName');
-  const thEmail       = document.getElementById('thEmail');
-  const thRole        = document.getElementById('thRole');
-  const thKey         = document.getElementById('thKey');
-  const thActions     = document.getElementById('thActions');
+  // DOM referansları
+  const nameInput      = document.getElementById('nameInput');
+  const emailInput     = document.getElementById('emailInput');
+  const addUserBtn     = document.getElementById('addUserBtn');
+  const formStatus     = document.getElementById('formStatus');
+  const userTableBody  = document.getElementById('userTableBody');
 
-  const boostAdminTitle = document.getElementById('boostAdminTitle');
-  const thBoostUser     = document.getElementById('thBoostUser');
-  const thBoostPlatform = document.getElementById('thBoostPlatform');
-  const thBoostService  = document.getElementById('thBoostService');
-  const thBoostLink     = document.getElementById('thBoostLink');
-  const thBoostStatus   = document.getElementById('thBoostStatus');
-  const thBoostCreated  = document.getElementById('thBoostCreated');
-  const thBoostActions  = document.getElementById('thBoostActions');
-  const boostTableBody  = document.getElementById('boostTableBody');
-  const boostAdminStatusMsg = document.getElementById('boostAdminStatusMsg');
+  const editSection    = document.getElementById('editSection');
+  const editInfo       = document.getElementById('editInfo');
+  const editName       = document.getElementById('editName');
+  const editEmail      = document.getElementById('editEmail');
+  const editPhone      = document.getElementById('editPhone');
+  const editWebsite    = document.getElementById('editWebsite');
+  const editAddress    = document.getElementById('editAddress');
+  const editVisitors   = document.getElementById('editVisitors');
+  const editSessions   = document.getElementById('editSessions');
+  const saveEditBtn    = document.getElementById('saveEditBtn');
+  const cancelEditBtn  = document.getElementById('cancelEditBtn');
+  const editStatus     = document.getElementById('editStatus');
 
-  const userTableBody   = document.getElementById('userTableBody');
+  let currentEditId = null;
 
-  let currentEditUserId = null;
-
-  themeBtn.addEventListener('click', () => {
-    document.body.classList.toggle('light-theme');
-  });
-
-  langBtn.addEventListener('click', () => {
-    const currentLang = adminTitle.getAttribute('data-lang');
-
-    if (currentLang === 'tr') {
-      adminTitle.textContent      = 'Admin Panel';
-      adminSubtitle.textContent   = 'You can manage users and boost requests.';
-      formTitle.textContent       = currentEditUserId ? 'Edit User' : 'Add User';
-      labelName.textContent       = 'Full Name';
-      labelEmail.textContent      = 'Email';
-      labelRole.textContent       = 'Role';
-      addUserBtn.textContent      = currentEditUserId ? 'Update' : 'Add';
-      cancelEditBtn.textContent   = 'Cancel';
-      listTitle.textContent       = 'User List';
-      thName.textContent          = 'Full Name';
-      thEmail.textContent         = 'Email';
-      thRole.textContent          = 'Role';
-      thKey.textContent           = 'Key';
-      thActions.textContent       = 'Actions';
-
-      boostAdminTitle.textContent = 'Boost Requests';
-      thBoostUser.textContent     = 'User';
-      thBoostPlatform.textContent = 'Platform';
-      thBoostService.textContent  = 'Type';
-      thBoostLink.textContent     = 'Link';
-      thBoostStatus.textContent   = 'Status';
-      thBoostCreated.textContent  = 'Created';
-      thBoostActions.textContent  = 'Action';
-
-      adminTitle.setAttribute('data-lang', 'en');
-      langBtn.innerHTML           = '🇬🇧 / 🇹🇷';
-    } else {
-      adminTitle.textContent      = 'Admin Paneli';
-      adminSubtitle.textContent   = 'Buradan kullanıcıları ve boost isteklerini yönetebilirsiniz.';
-      formTitle.textContent       = currentEditUserId ? 'Kullanıcı Düzenle' : 'Kullanıcı Ekle';
-      labelName.textContent       = 'Ad Soyad';
-      labelEmail.textContent      = 'E-posta';
-      labelRole.textContent       = 'Rol';
-      addUserBtn.textContent      = currentEditUserId ? 'Güncelle' : 'Ekle';
-      cancelEditBtn.textContent   = 'İptal';
-      listTitle.textContent       = 'Kullanıcı Listesi';
-      thName.textContent          = 'Ad Soyad';
-      thEmail.textContent         = 'E-posta';
-      thRole.textContent          = 'Rol';
-      thKey.textContent           = 'Anahtar';
-      thActions.textContent       = 'İşlemler';
-
-      boostAdminTitle.textContent = 'Boost İstekleri';
-      thBoostUser.textContent     = 'Kullanıcı';
-      thBoostPlatform.textContent = 'Platform';
-      thBoostService.textContent  = 'Tür';
-      thBoostLink.textContent     = 'Link';
-      thBoostStatus.textContent   = 'Durum';
-      thBoostCreated.textContent  = 'Tarih';
-      thBoostActions.textContent  = 'İşlem';
-
-      adminTitle.setAttribute('data-lang', 'tr');
-      langBtn.innerHTML           = '🇹🇷 / 🇬🇧';
-    }
-  });
-
-  function getLang() {
-    return adminTitle.getAttribute('data-lang') || 'tr';
-  }
-
-  function generateAccessKey(length = 10) {
+  function generateAccessKey(length = 8) {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     let key = '';
     for (let i = 0; i < length; i++) {
@@ -540,262 +286,193 @@
     return key;
   }
 
-  function resetUserForm() {
-    const lang = getLang();
-    currentEditUserId = null;
-    document.getElementById('nameInput').value = '';
-    document.getElementById('emailInput').value = '';
-    document.getElementById('roleSelect').value = 'user';
-
-    addUserBtn.textContent = (lang === 'tr') ? 'Ekle' : 'Add';
-    formTitle.textContent  = (lang === 'tr') ? 'Kullanıcı Ekle' : 'Add User';
-    cancelEditBtn.style.display = 'none';
-    formStatus.textContent = '';
+  function setFormStatus(msg, isError = false) {
+    formStatus.style.color = isError ? '#fecaca' : '#9ca3af';
+    formStatus.textContent = msg || '';
   }
 
-  cancelEditBtn.addEventListener('click', () => {
-    resetUserForm();
-  });
-
-  function appendUserRow(id, user) {
-    const tr = document.createElement('tr');
-    tr.dataset.docId = id;
-    tr.innerHTML = `
-      <td class="user-name">${user.name || ''}</td>
-      <td class="user-email">${user.email || ''}</td>
-      <td class="user-role">${user.role || ''}</td>
-      <td>${user.accessKey || ''}</td>
-      <td class="actions">
-        <button class="user-edit-btn">Düzenle</button>
-        <button class="user-delete-btn">Sil</button>
-      </td>
-    `;
-
-    const editBtn = tr.querySelector('.user-edit-btn');
-    const deleteBtn = tr.querySelector('.user-delete-btn');
-
-    editBtn.addEventListener('click', () => startEditUser(tr));
-    deleteBtn.addEventListener('click', () => deleteUser(tr));
-
-    userTableBody.appendChild(tr);
+  function setEditStatus(msg, isError = false) {
+    editStatus.style.color = isError ? '#fecaca' : '#9ca3af';
+    editStatus.textContent = msg || '';
   }
 
-  function startEditUser(tr) {
-    const id    = tr.dataset.docId;
-    const name  = tr.querySelector('.user-name').textContent;
-    const email = tr.querySelector('.user-email').textContent;
-    const role  = tr.querySelector('.user-role').textContent;
+  addUserBtn.addEventListener('click', async () => {
+    const name  = nameInput.value.trim();
+    const email = emailInput.value.trim();
+    if (!name || !email) {
+      setFormStatus('Lütfen ad ve e-posta girin.', true);
+      return;
+    }
 
-    currentEditUserId = id;
-    document.getElementById('nameInput').value = name;
-    document.getElementById('emailInput').value = email;
-    document.getElementById('roleSelect').value = role || 'user';
-
-    const lang = getLang();
-    addUserBtn.textContent = (lang === 'tr') ? 'Güncelle' : 'Update';
-    formTitle.textContent  = (lang === 'tr') ? 'Kullanıcı Düzenle' : 'Edit User';
-    cancelEditBtn.style.display = 'inline-block';
-
-    formStatus.style.color = '#e5e7eb';
-    formStatus.textContent = (lang === 'tr')
-      ? 'Düzenleme modundasınız. Kaydetmek için "Güncelle"ye basın.'
-      : 'Edit mode. Press "Update" to save.';
-  }
-
-  async function deleteUser(tr) {
-    const id = tr.dataset.docId;
-    const lang = getLang();
-    formStatus.style.color = '#e5e7eb';
-    formStatus.textContent = (lang === 'tr')
-      ? 'Kullanıcı siliniyor...'
-      : 'Deleting user...';
+    setFormStatus('Kullanıcı ekleniyor...');
 
     try {
-      await deleteDoc(doc(db, 'users', id));
-      tr.remove();
-      formStatus.style.color = '#bbf7d0';
-      formStatus.textContent = (lang === 'tr')
-        ? 'Kullanıcı silindi.'
-        : 'User deleted.';
-      if (currentEditUserId === id) resetUserForm();
+      const accessKey = generateAccessKey();
+      await addDoc(collection(db, 'users'), {
+        name,
+        email,
+        role: 'user',
+        accessKey,
+        phone: '',
+        website: '',
+        address: '',
+        totalVisitors: 0,
+        activeSessions: 0
+      });
+
+      nameInput.value = '';
+      emailInput.value = '';
+      setFormStatus(`Kullanıcı eklendi. Anahtar: ${accessKey}`);
+      await loadUsers();
     } catch (err) {
       console.error(err);
-      formStatus.style.color = '#fecaca';
-      formStatus.textContent = (lang === 'tr')
-        ? 'Kullanıcı silinirken hata oluştu.'
-        : 'Error deleting user.';
+      setFormStatus('Kullanıcı eklenirken hata oluştu.', true);
     }
-  }
+  });
 
   async function loadUsers() {
     userTableBody.innerHTML = '';
     try {
       const snap = await getDocs(collection(db, 'users'));
       snap.forEach(docSnap => {
-        appendUserRow(docSnap.id, docSnap.data());
+        const u = docSnap.data();
+        const tr = document.createElement('tr');
+        tr.dataset.id = docSnap.id;
+        tr.innerHTML = `
+          <td>${u.name || ''}</td>
+          <td>${u.email || ''}</td>
+          <td>${u.accessKey || ''}</td>
+          <td class="actions">
+            <button class="edit-btn">Düzenle</button>
+            <button class="delete-btn">Sil</button>
+          </td>
+        `;
+        userTableBody.appendChild(tr);
       });
     } catch (err) {
       console.error('Kullanıcıları çekerken hata:', err);
     }
   }
 
-  const STATUS_OPTIONS = [
-    'Yönetici onayında',
-    'Hazırlanıyor',
-    'Gönderiliyor',
-    'Tamamlandı',
-    'Reddedildi'
-  ];
+  userTableBody.addEventListener('click', async (e) => {
+    const btn = e.target;
+    const tr = btn.closest('tr');
+    if (!tr) return;
+    const id = tr.dataset.id;
+    if (!id) return;
 
-  function showBoostToast(type, message) {
-    boostAdminStatusMsg.className = 'boost-admin-toast show ' + (type === 'error' ? 'error' : 'success');
-    boostAdminStatusMsg.textContent = message;
-    setTimeout(() => { boostAdminStatusMsg.classList.remove('show'); }, 2500);
-  }
-
-  async function loadBoostRequests() {
-    boostTableBody.innerHTML = '';
-    try {
-      const snap = await getDocs(collection(db, 'boostRequests'));
-      snap.forEach(docSnap => {
-        const data = docSnap.data();
-        const tr = document.createElement('tr');
-        const created = data.createdAt || '';
-
-        const status = data.status || 'Yönetici onayında';
-        const optionsHtml = STATUS_OPTIONS.map(opt => `
-          <option value="${opt}" ${opt === status ? 'selected' : ''}>${opt}</option>
-        `).join('');
-
-        tr.innerHTML = `
-          <td>
-            <div>${data.userName || '-'}</div>
-            <div class="boost-status-row">${data.userAccessKey || ''}</div>
-          </td>
-          <td>${data.platform || ''}</td>
-          <td>${data.serviceType || ''}</td>
-          <td>
-            <a class="boost-link" href="${data.link}" target="_blank">${data.link || ''}</a>
-          </td>
-          <td>
-            <select class="boost-status-select">
-              ${optionsHtml}
-            </select>
-          </td>
-          <td>${created}</td>
-          <td style="white-space:nowrap;">
-            <button class="save-status-btn">💾 Kaydet</button>
-          </td>
-        `;
-        tr.dataset.docId = docSnap.id;
-        boostTableBody.appendChild(tr);
-      });
-
-      document.querySelectorAll('.save-status-btn').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          const tr = btn.closest('tr');
-          const id = tr.dataset.docId;
-          const newStatus = tr.querySelector('.boost-status-select').value;
-          const lang = getLang();
-          try {
-            await updateDoc(doc(db, 'boostRequests', id), { status: newStatus });
-            showBoostToast('success', lang === 'tr' ? 'Durum güncellendi.' : 'Status updated.');
-          } catch (err) {
-            console.error(err);
-            showBoostToast('error', lang === 'tr'
-              ? 'Durum güncellenirken hata oluştu.'
-              : 'Error updating status.');
-          }
-        });
-      });
-    } catch (err) {
-      console.error('Boost isteklerini çekerken hata:', err);
-    }
-  }
-
-  (async () => {
-    await loadUsers();
-    await loadBoostRequests();
-  })();
-
-  addUserBtn.addEventListener('click', async () => {
-    const name  = document.getElementById('nameInput').value.trim();
-    const email = document.getElementById('emailInput').value.trim();
-    const role  = document.getElementById('roleSelect').value;
-    const lang  = getLang();
-
-    if (!name || !email) {
-      formStatus.style.color = '#fecaca';
-      formStatus.textContent = (lang === 'tr')
-        ? 'Lütfen ad ve e-posta girin.'
-        : 'Please enter name and email.';
-      return;
-    }
-
-    if (currentEditUserId) {
-      formStatus.style.color = '#e5e7eb';
-      formStatus.textContent = (lang === 'tr')
-        ? 'Kullanıcı güncelleniyor...'
-        : 'Updating user...';
-
+    if (btn.classList.contains('edit-btn')) {
+      await startEditUser(id);
+    } else if (btn.classList.contains('delete-btn')) {
+      if (!confirm('Bu kullanıcı silinsin mi?')) return;
       try {
-        await updateDoc(doc(db, 'users', currentEditUserId), { name, email, role });
-
-        const tr = userTableBody.querySelector(`tr[data-doc-id="${currentEditUserId}"]`);
-        if (tr) {
-          tr.querySelector('.user-name').textContent  = name;
-          tr.querySelector('.user-email').textContent = email;
-          tr.querySelector('.user-role').textContent  = role;
+        await deleteDoc(doc(db, 'users', id));
+        if (currentEditId === id) {
+          currentEditId = null;
+          editSection.style.display = 'none';
+          editInfo.textContent = 'Henüz kullanıcı seçilmedi.';
         }
-
-        formStatus.style.color = '#bbf7d0';
-        formStatus.textContent = (lang === 'tr')
-          ? 'Kullanıcı güncellendi.'
-          : 'User updated.';
-
-        resetUserForm();
+        await loadUsers();
       } catch (err) {
         console.error(err);
-        formStatus.style.color = '#fecaca';
-        formStatus.textContent = (lang === 'tr')
-          ? 'Kullanıcı güncellenirken hata oluştu.'
-          : 'Error while updating user.';
-      }
-    } else {
-      const accessKey = generateAccessKey();
-
-      formStatus.style.color = '#e5e7eb';
-      formStatus.textContent = (lang === 'tr')
-        ? 'Kullanıcı ekleniyor...'
-        : 'Adding user...';
-
-      try {
-        const docRef = await addDoc(collection(db, 'users'), {
-          name,
-          email,
-          role,
-          accessKey
-        });
-
-        appendUserRow(docRef.id, { name, email, role, accessKey });
-
-        document.getElementById('nameInput').value = '';
-        document.getElementById('emailInput').value = '';
-        document.getElementById('roleSelect').value = 'user';
-
-        formStatus.style.color = '#bbf7d0';
-        formStatus.textContent = (lang === 'tr')
-          ? `Kullanıcı eklendi.\nAnahtar: ${accessKey}`
-          : `User added.\nKey: ${accessKey}`;
-      } catch (err) {
-        console.error(err);
-        formStatus.style.color = '#fecaca';
-        formStatus.textContent = (lang === 'tr')
-          ? 'Kullanıcı eklenirken hata oluştu.'
-          : 'Error while adding user.';
+        alert('Silinirken hata oluştu.');
       }
     }
   });
+
+  async function startEditUser(id) {
+    try {
+      const ref = doc(db, 'users', id);
+      const snap = await getDoc(ref);
+      if (!snap.exists()) {
+        alert('Kullanıcı bulunamadı.');
+        return;
+      }
+      const u = snap.data();
+      currentEditId = id;
+      editName.value     = u.name || '';
+      editEmail.value    = u.email || '';
+      editPhone.value    = u.phone || '';
+      editWebsite.value  = u.website || '';
+      editAddress.value  = u.address || '';
+      editVisitors.value = u.totalVisitors || 0;
+      editSessions.value = u.activeSessions || 0;
+
+      editInfo.textContent = `Düzenlenen kullanıcı: ${u.name || ''} (${u.accessKey || ''})`;
+      editSection.style.display = 'block';
+      setEditStatus('');
+    } catch (err) {
+      console.error(err);
+      alert('Kullanıcı yüklenirken hata oluştu.');
+    }
+  }
+
+  saveEditBtn.addEventListener('click', async () => {
+    if (!currentEditId) {
+      setEditStatus('Önce bir kullanıcı seçin.', true);
+      return;
+    }
+
+    const name     = editName.value.trim();
+    const email    = editEmail.value.trim();
+    const phone    = editPhone.value.trim();
+    const website  = editWebsite.value.trim();
+    const address  = editAddress.value.trim();
+    const visitors = parseInt(editVisitors.value) || 0;
+    const sessions = parseInt(editSessions.value) || 0;
+
+    setEditStatus('Kaydediliyor...');
+
+    try {
+      const ref = doc(db, 'users', currentEditId);
+      await updateDoc(ref, {
+        name,
+        email,
+        phone,
+        website,
+        address,
+        totalVisitors: visitors,
+        activeSessions: sessions
+      });
+
+      setEditStatus('Kayıt güncellendi.');
+      await loadUsers();
+    } catch (err) {
+      console.error(err);
+      setEditStatus('Güncellerken hata oluştu.', true);
+    }
+  });
+
+  cancelEditBtn.addEventListener('click', () => {
+    currentEditId = null;
+    editSection.style.display = 'none';
+    editInfo.textContent = 'Henüz kullanıcı seçilmedi.';
+    setEditStatus('');
+  });
+
+  // Login kontrol (isteğe bağlı – admin de key ile giriyorsa burada role check yapabilirsin)
+  try {
+    const raw = localStorage.getItem('currentUser');
+    if (!raw) {
+      window.location.href = 'index.html';
+    } else {
+      const u = JSON.parse(raw);
+      if (u.role !== 'admin') {
+        window.location.href = 'user.html';
+      }
+    }
+  } catch (e) {
+    console.error(e);
+    window.location.href = 'index.html';
+  }
+
+  window.logout = () => {
+    try { localStorage.removeItem('currentUser'); } catch (e) {}
+    window.location.href = 'index.html';
+  };
+
+  // İlk yükleme
+  loadUsers();
 </script>
 
 </body>
