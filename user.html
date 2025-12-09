@@ -35,13 +35,18 @@
       margin: 0;
       font-family: Arial, sans-serif;
       background-color: var(--bg-color);
+      /* daha fazla yıldız */
       background-image:
-        radial-gradient(1px 1px at 10px 20px, rgba(255,255,255,0.7), transparent 50%),
-        radial-gradient(1px 1px at 40px 60px, rgba(255,255,255,0.4), transparent 50%),
-        radial-gradient(1.2px 1.2px at 130px 80px, rgba(255,255,255,0.5), transparent 50%),
-        radial-gradient(2px 2px at 200px 120px, rgba(255,255,255,0.8), transparent 50%),
-        radial-gradient(1px 1px at 250px 200px, rgba(255,255,255,0.6), transparent 50%);
-      background-size: 250px 250px;
+        radial-gradient(1px 1px at 10px 20px, rgba(255,255,255,0.8), transparent 50%),
+        radial-gradient(1px 1px at 40px 60px, rgba(255,255,255,0.6), transparent 50%),
+        radial-gradient(1.2px 1.2px at 130px 80px, rgba(255,255,255,0.7), transparent 50%),
+        radial-gradient(1.5px 1.5px at 200px 120px, rgba(255,255,255,0.9), transparent 50%),
+        radial-gradient(1px 1px at 250px 200px, rgba(255,255,255,0.7), transparent 50%),
+        radial-gradient(1px 1px at 80px 180px, rgba(255,255,255,0.5), transparent 50%),
+        radial-gradient(1px 1px at 180px 30px, rgba(255,255,255,0.6), transparent 50%),
+        radial-gradient(1.2px 1.2px at 300px 220px, rgba(255,255,255,0.8), transparent 50%),
+        radial-gradient(1px 1px at 320px 40px, rgba(255,255,255,0.5), transparent 50%);
+      background-size: 260px 260px;
       color: var(--text-color);
       min-height: 100vh;
       display: flex;
@@ -247,7 +252,8 @@
     }
 
     .form-group select,
-    .form-group input {
+    .form-group input,
+    .form-group textarea {
       width: 100%;
       padding: 8px 10px;
       border-radius: 8px;
@@ -256,20 +262,22 @@
       color: var(--text-color);
       outline: none;
       font-size: 13px;
+      resize: vertical;
     }
 
     .form-group select:focus,
-    .form-group input:focus {
+    .form-group input:focus,
+    .form-group textarea:focus {
       border-color: #a855f7;
       box-shadow: 0 0 0 1px rgba(168, 85, 247, 0.7);
     }
 
-    .boost-actions {
+    .request-actions {
       margin-top: 10px;
       text-align: right;
     }
 
-    .boost-actions button {
+    .request-actions button {
       padding: 8px 14px;
       border-radius: 999px;
       border: none;
@@ -279,107 +287,43 @@
       font-size: 13px;
     }
 
-    .boost-status-msg {
+    .request-status-msg {
       margin-top: 8px;
       font-size: 13px;
       min-height: 16px;
     }
 
-    .boost-status-msg.success { color: #bbf7d0; }
-    .boost-status-msg.error   { color: #fecaca; }
+    .request-status-msg.success { color: #bbf7d0; }
+    .request-status-msg.error   { color: #fecaca; }
 
-    .boost-confirm {
-      margin-top: 12px;
-      padding: 10px 12px;
-      border-radius: 12px;
-      border: 1px solid var(--card-border);
-      background: rgba(15, 23, 42, 0.92);
+    .request-section {
       display: none;
-      font-size: 13px;
+      margin-top: 8px;
     }
 
-    .light-theme .boost-confirm {
-      background: rgba(249, 250, 251, 0.96);
+    .request-section.active {
+      display: block;
     }
 
-    .boost-confirm.show { display: block; }
-
-    .boost-confirm-title {
-      font-weight: bold;
-      margin-bottom: 6px;
-    }
-
-    .boost-confirm-details {
-      font-size: 12px;
-      color: var(--muted-text);
-      margin-bottom: 8px;
-      white-space: pre-wrap;
-    }
-
-    .boost-confirm-actions {
-      text-align: right;
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-    }
-
-    .boost-confirm-actions button {
-      padding: 5px 10px;
-      border-radius: 999px;
-      border: none;
-      cursor: pointer;
-      font-size: 12px;
-    }
-
-    .btn-secondary {
-      background: transparent;
-      color: var(--muted-text);
-      border: 1px solid var(--card-border);
-    }
-
-    .btn-primary {
-      background: var(--button-bg);
-      color: var(--button-text);
-    }
-
-    .boost-table {
+    .request-table {
       width: 100%;
       border-collapse: collapse;
       font-size: 13px;
       margin-top: 12px;
     }
 
-    .boost-table th,
-    .boost-table td {
+    .request-table th,
+    .request-table td {
       padding: 8px 10px;
       border-bottom: 1px solid rgba(148, 163, 184, 0.3);
     }
 
-    .boost-link {
-      max-width: 160px;
-      display: inline-block;
+    .request-summary {
+      max-width: 260px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
-
-    .boost-detail-box {
-      margin-top: 10px;
-      padding: 8px 10px;
-      border-radius: 10px;
-      border: 1px solid var(--card-border);
-      background: rgba(15, 23, 42, 0.92);
-      font-size: 12px;
-      color: var(--muted-text);
-      display: none;
-      white-space: pre-wrap;
-    }
-
-    .light-theme .boost-detail-box {
-      background: rgba(249, 250, 251, 0.96);
-    }
-
-    .boost-detail-box.show { display: block; }
 
     footer {
       margin-top: auto;
@@ -399,7 +343,7 @@
 <aside class="sidebar">
   <div>
     <div class="sidebar-logo" id="logoText">👤 Kullanıcı Paneli</div>
-    <div class="sidebar-sub" id="logoSubText">Kişisel menü ve durum bilgileri</div>
+    <div class="sidebar-sub" id="logoSubText">Site yönetim istekleri buradan gönderilir</div>
 
     <div class="sidebar-controls">
       <button id="langBtn" class="lang-btn">🇹🇷 / 🇬🇧</button>
@@ -423,31 +367,33 @@
   </nav>
 
   <div class="menu-footer">
-    Bu menü daha sonra detaylı fonksiyonlarla bağlanacak.
+    Bu panel, ana sitenizin yönetim isteklerini admin’e iletmek için kullanılır.
   </div>
 </aside>
 
 <div class="content">
   <header>
     <h1 id="userTitle" data-lang="tr">Hoş geldiniz!</h1>
-    <p id="userSubtitle">Bu panelden hesabınızı ve sistem durumunu takip edebilirsiniz.</p>
+    <p id="userSubtitle">Bu panelden siteniz için yönetim istekleri gönderebilirsiniz.</p>
   </header>
 
+  <!-- Özet kartlar (istatistikler) -->
   <section class="cards">
     <div class="card">
-      <h2 id="card1Title">Hesabım</h2>
-      <p id="card1Text">Kişisel bilgilerinizi görüntüleyin.</p>
+      <h2 id="card1Title">Site İstatistikleri <span class="badge">Özet</span></h2>
+      <p id="card1Text">Bugünkü ziyaretçi, toplam ziyaretçi, kayıtlı kullanıcı ve oturum bilgilerini admin’e iletebilirsiniz.</p>
     </div>
     <div class="card">
-      <h2 id="card2Title">Bildirimler</h2>
-      <p id="card2Text">Sistem mesajlarını ve uyarıları takip edin.</p>
+      <h2 id="card2Title">Duyuru & Bakım</h2>
+      <p id="card2Text">Yeni duyuru yayınlama veya bakım modunu aç/kapatma isteği gönderebilirsiniz.</p>
     </div>
     <div class="card">
-      <h2 id="card3Title">Destek</h2>
-      <p id="card3Text">Herhangi bir sorun yaşarsanız bizimle iletişime geçin.</p>
+      <h2 id="card3Title">İstek Takibi</h2>
+      <p id="card3Text">Gönderdiğiniz site yönetim isteklerinin durumlarını aşağıdan takip edin.</p>
     </div>
   </section>
 
+  <!-- Statü barları (sistemin genel durumu, görsel) -->
   <section class="status-section">
     <h2 id="statusTitle">Statü Durumu</h2>
 
@@ -476,72 +422,97 @@
     </div>
   </section>
 
+  <!-- Site Yönetim İsteği Formu -->
   <section class="card" style="max-width: 720px; margin-top:25px;">
-    <h2>Boost İsteği <span class="badge">Yeni Talep</span></h2>
+    <h2>Site Yönetim İsteği <span class="badge">Yeni İstek</span></h2>
 
     <div class="form-group">
-      <label for="boostPlatform">Platform</label>
-      <select id="boostPlatform">
+      <label for="requestType">İstek Tipi</label>
+      <select id="requestType">
         <option value="">Seçiniz...</option>
-        <option value="TikTok">TikTok</option>
-        <option value="Instagram">Instagram</option>
-        <option value="YouTube">YouTube</option>
-        <option value="Twitter/X">Twitter / X</option>
+        <option value="stats">İstatistik Güncelleme</option>
+        <option value="announcement">Yeni Duyuru Yayınla</option>
+        <option value="maintenance">Bakım Modu Aç/Kapat</option>
       </select>
     </div>
 
-    <div class="form-group">
-      <label for="boostService">Tür</label>
-      <select id="boostService">
-        <option value="">Seçiniz...</option>
-        <option value="Beğeni">Beğeni</option>
-        <option value="İzlenme">İzlenme</option>
-        <option value="Takipçi">Takipçi</option>
-        <option value="Yorum">Yorum</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label for="boostLink">Link</label>
-      <input id="boostLink" type="text" placeholder="İçeriğin tam linkini girin">
-    </div>
-
-    <div class="boost-actions">
-      <button id="boostSendBtn">Gönder</button>
-    </div>
-
-    <div id="boostConfirm" class="boost-confirm">
-      <div class="boost-confirm-title">Onaylıyor musunuz?</div>
-      <div id="boostConfirmDetails" class="boost-confirm-details"></div>
-      <div class="boost-confirm-actions">
-        <button id="boostCancelBtn" class="btn-secondary">İptal</button>
-        <button id="boostConfirmBtn" class="btn-primary">Onayla ve Gönder</button>
+    <!-- İstatistik Güncelleme -->
+    <div id="requestStatsSection" class="request-section">
+      <div class="form-group">
+        <label for="visitorsToday">Bugünkü ziyaretçi sayısı</label>
+        <input id="visitorsToday" type="number" min="0" placeholder="Örn: 123">
+      </div>
+      <div class="form-group">
+        <label for="visitorsTotal">Toplam ziyaretçi</label>
+        <input id="visitorsTotal" type="number" min="0" placeholder="Örn: 8450">
+      </div>
+      <div class="form-group">
+        <label for="totalUsers">Toplam kayıtlı kullanıcı</label>
+        <input id="totalUsers" type="number" min="0" placeholder="Örn: 320">
+      </div>
+      <div class="form-group">
+        <label for="activeSessions">Aktif oturum sayısı</label>
+        <input id="activeSessions" type="number" min="0" placeholder="Örn: 12">
+      </div>
+      <div class="form-group">
+        <label for="lastDeploy">Son deploy tarihi (tarih / saat)</label>
+        <input id="lastDeploy" type="text" placeholder="Örn: 12.12.2025 14:32">
       </div>
     </div>
 
-    <div id="boostStatusMsg" class="boost-status-msg"></div>
+    <!-- Yeni Duyuru -->
+    <div id="requestAnnouncementSection" class="request-section">
+      <div class="form-group">
+        <label for="announcementTitle">Duyuru başlığı</label>
+        <input id="announcementTitle" type="text" placeholder="Örn: Yeni sürüm yayında!">
+      </div>
+      <div class="form-group">
+        <label for="announcementMessage">Duyuru metni</label>
+        <textarea id="announcementMessage" rows="3" placeholder="Kullanıcılara gösterilecek duyuru metni..."></textarea>
+      </div>
+    </div>
+
+    <!-- Bakım Modu -->
+    <div id="requestMaintenanceSection" class="request-section">
+      <div class="form-group">
+        <label for="maintenanceMode">Bakım modu durumu</label>
+        <select id="maintenanceMode">
+          <option value="">Seçiniz...</option>
+          <option value="open">Bakım Modunu Aç</option>
+          <option value="close">Bakım Modunu Kapat</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="maintenanceNote">Not (isteğe bağlı)</label>
+        <textarea id="maintenanceNote" rows="2" placeholder="Örn: 01:00 - 03:00 arasında bakım planlanıyor."></textarea>
+      </div>
+    </div>
+
+    <div class="request-actions">
+      <button id="requestSendBtn">İstek Gönder</button>
+    </div>
+
+    <div id="requestStatusMsg" class="request-status-msg"></div>
   </section>
 
+  <!-- Gönderilen İstekler Tablosu -->
   <section class="card" style="max-width: 900px; margin-top:20px;">
-    <h2>Boost İsteklerim <span class="badge">Durum Takibi</span></h2>
-    <table class="boost-table">
+    <h2>İsteklerim <span class="badge">Durum Takibi</span></h2>
+    <table class="request-table">
       <thead>
         <tr>
-          <th>Platform</th>
-          <th>Tür</th>
-          <th>Link</th>
+          <th>Tip</th>
+          <th>Açıklama</th>
           <th>Durum</th>
-          <th>Detay</th>
+          <th>Tarih</th>
         </tr>
       </thead>
-      <tbody id="boostTableBody"></tbody>
+      <tbody id="requestTableBody"></tbody>
     </table>
-
-    <div id="boostDetailBox" class="boost-detail-box"></div>
   </section>
 
   <footer>
-    © 2025 Kullanıcı Paneli – Boost istekleri Firestore üzerinden takip ediliyor.
+    © 2025 Site Yönetim Paneli – Tüm istekler admin tarafına iletilir ve Firestore’da saklanır.
   </footer>
 </div>
 
@@ -569,6 +540,7 @@
   const app = initializeApp(firebaseConfig);
   const db  = getFirestore(app);
 
+  // Login kontrolü
   let currentUser = null;
   try {
     const raw = localStorage.getItem('currentUser');
@@ -579,6 +551,7 @@
     window.location.href = 'index.html';
   }
 
+  // DOM referansları
   const themeBtn   = document.getElementById('themeBtn');
   const langBtn    = document.getElementById('langBtn');
   const logoText   = document.getElementById('logoText');
@@ -602,18 +575,27 @@
   const menuProfile   = document.getElementById('menuProfile');
   const menuLogout    = document.getElementById('menuLogout');
 
-  const boostPlatform   = document.getElementById('boostPlatform');
-  const boostService    = document.getElementById('boostService');
-  const boostLink       = document.getElementById('boostLink');
-  const boostSendBtn    = document.getElementById('boostSendBtn');
-  const boostStatusMsg  = document.getElementById('boostStatusMsg');
-  const boostConfirm    = document.getElementById('boostConfirm');
-  const boostConfirmDetails = document.getElementById('boostConfirmDetails');
-  const boostConfirmBtn = document.getElementById('boostConfirmBtn');
-  const boostCancelBtn  = document.getElementById('boostCancelBtn');
+  const requestTypeSelect = document.getElementById('requestType');
+  const requestStatsSection        = document.getElementById('requestStatsSection');
+  const requestAnnouncementSection = document.getElementById('requestAnnouncementSection');
+  const requestMaintenanceSection  = document.getElementById('requestMaintenanceSection');
 
-  const boostTableBody  = document.getElementById('boostTableBody');
-  const boostDetailBox  = document.getElementById('boostDetailBox');
+  const visitorsTodayInput   = document.getElementById('visitorsToday');
+  const visitorsTotalInput   = document.getElementById('visitorsTotal');
+  const totalUsersInput      = document.getElementById('totalUsers');
+  const activeSessionsInput  = document.getElementById('activeSessions');
+  const lastDeployInput      = document.getElementById('lastDeploy');
+
+  const announcementTitleInput   = document.getElementById('announcementTitle');
+  const announcementMessageInput = document.getElementById('announcementMessage');
+
+  const maintenanceModeSelect = document.getElementById('maintenanceMode');
+  const maintenanceNoteInput  = document.getElementById('maintenanceNote');
+
+  const requestSendBtn   = document.getElementById('requestSendBtn');
+  const requestStatusMsg = document.getElementById('requestStatusMsg');
+
+  const requestTableBody = document.getElementById('requestTableBody');
 
   if (currentUser && currentUser.name) {
     userTitle.textContent = `Hoş geldiniz, ${currentUser.name}!`;
@@ -634,16 +616,16 @@
       userTitle.textContent     = currentUser && currentUser.name
         ? `Welcome, ${currentUser.name}!`
         : 'Welcome!';
-      userSubtitle.textContent  = 'Use this panel to track your account and system status.';
+      userSubtitle.textContent  = 'You can send site management requests to the admin using this panel.';
       logoText.textContent      = '👤 User Panel';
-      logoSubText.textContent   = 'Personal menu and status overview';
+      logoSubText.textContent   = 'Send management requests for your site';
 
-      card1Title.textContent    = 'My Account';
-      card1Text.textContent     = 'View your personal information.';
-      card2Title.textContent    = 'Notifications';
-      card2Text.textContent     = 'Follow system messages and alerts.';
-      card3Title.textContent    = 'Support';
-      card3Text.textContent     = 'Contact us if you face any issues.';
+      card1Title.textContent    = 'Site Statistics';
+      card1Text.textContent     = 'You can send today/total visitors, registered users and sessions info to the admin.';
+      card2Title.textContent    = 'Announcement & Maintenance';
+      card2Text.textContent     = 'Request new announcement or toggle maintenance mode.';
+      card3Title.textContent    = 'Request Tracking';
+      card3Text.textContent     = 'Track the status of your site management requests below.';
 
       statusTitle.textContent   = 'Status';
       status1Label.textContent  = 'Server';
@@ -660,16 +642,16 @@
       userTitle.textContent     = currentUser && currentUser.name
         ? `Hoş geldiniz, ${currentUser.name}!`
         : 'Hoş geldiniz!';
-      userSubtitle.textContent  = 'Bu panelden hesabınızı ve sistem durumunu takip edebilirsiniz.';
+      userSubtitle.textContent  = 'Bu panelden siteniz için yönetim istekleri gönderebilirsiniz.';
       logoText.textContent      = '👤 Kullanıcı Paneli';
-      logoSubText.textContent   = 'Kişisel menü ve durum bilgileri';
+      logoSubText.textContent   = 'Site yönetim istekleri buradan gönderilir';
 
-      card1Title.textContent    = 'Hesabım';
-      card1Text.textContent     = 'Kişisel bilgilerinizi görüntüleyin.';
-      card2Title.textContent    = 'Bildirimler';
-      card2Text.textContent     = 'Sistem mesajlarını ve uyarıları takip edin.';
-      card3Title.textContent    = 'Destek';
-      card3Text.textContent     = 'Herhangi bir sorun yaşarsanız bizimle iletişime geçin.';
+      card1Title.textContent    = 'Site İstatistikleri';
+      card1Text.textContent     = 'Bugünkü ziyaretçi, toplam ziyaretçi, kayıtlı kullanıcı ve oturum bilgilerini admin’e iletebilirsiniz.';
+      card2Title.textContent    = 'Duyuru & Bakım';
+      card2Text.textContent     = 'Yeni duyuru yayınlama veya bakım modunu aç/kapatma isteği gönderebilirsiniz.';
+      card3Title.textContent    = 'İstek Takibi';
+      card3Text.textContent     = 'Gönderdiğiniz site yönetim isteklerinin durumlarını aşağıdan takip edin.';
 
       statusTitle.textContent   = 'Statü Durumu';
       status1Label.textContent  = 'Sunucu';
@@ -698,157 +680,195 @@
     });
   });
 
-  function setBoostStatus(type, message) {
-    boostStatusMsg.classList.remove('success', 'error');
-    if (type) boostStatusMsg.classList.add(type);
-    boostStatusMsg.textContent = message || '';
+  function setRequestStatus(type, message) {
+    requestStatusMsg.classList.remove('success', 'error');
+    if (type) requestStatusMsg.classList.add(type);
+    requestStatusMsg.textContent = message || '';
   }
 
-  boostSendBtn.addEventListener('click', () => {
-    const platform = boostPlatform.value;
-    const service  = boostService.value;
-    const link     = boostLink.value.trim();
-    const lang     = getLang();
+  function showRequestSection(type) {
+    requestStatsSection.classList.remove('active');
+    requestAnnouncementSection.classList.remove('active');
+    requestMaintenanceSection.classList.remove('active');
 
-    if (!platform || !service || !link) {
-      setBoostStatus('error', lang === 'tr'
-        ? 'Lütfen platform, tür ve link alanlarını doldurun.'
-        : 'Please fill in platform, type and link.');
+    if (type === 'stats') requestStatsSection.classList.add('active');
+    if (type === 'announcement') requestAnnouncementSection.classList.add('active');
+    if (type === 'maintenance') requestMaintenanceSection.classList.add('active');
+  }
+
+  requestTypeSelect.addEventListener('change', () => {
+    showRequestSection(requestTypeSelect.value);
+    setRequestStatus('', '');
+  });
+
+  requestSendBtn.addEventListener('click', async () => {
+    const type = requestTypeSelect.value;
+    const lang = getLang();
+
+    if (!type) {
+      setRequestStatus('error', lang === 'tr'
+        ? 'Lütfen istek tipini seçin.'
+        : 'Please select a request type.');
       return;
     }
 
-    const detailText = (lang === 'tr')
-      ? `Platform : ${platform}\nTür      : ${service}\nLink     : ${link}`
-      : `Platform : ${platform}\nType     : ${service}\nLink     : ${link}`;
+    let payload = {};
+    if (type === 'stats') {
+      const vToday  = visitorsTodayInput.value.trim();
+      const vTotal  = visitorsTotalInput.value.trim();
+      const tUsers  = totalUsersInput.value.trim();
+      const aSess   = activeSessionsInput.value.trim();
+      const deploy  = lastDeployInput.value.trim();
 
-    boostConfirmDetails.textContent = detailText;
-    boostConfirm.classList.add('show');
-    setBoostStatus('', '');
-  });
+      if (!vToday || !vTotal || !tUsers || !aSess || !deploy) {
+        setRequestStatus('error', lang === 'tr'
+          ? 'Lütfen tüm istatistik alanlarını doldurun.'
+          : 'Please fill all statistics fields.');
+        return;
+      }
 
-  boostCancelBtn.addEventListener('click', () => {
-    boostConfirm.classList.remove('show');
-  });
-
-  boostConfirmBtn.addEventListener('click', async () => {
-    const platform = boostPlatform.value;
-    const service  = boostService.value;
-    const link     = boostLink.value.trim();
-    const lang     = getLang();
-
-    if (!platform || !service || !link) {
-      boostConfirm.classList.remove('show');
-      setBoostStatus('error', lang === 'tr'
-        ? 'İstek geçersiz. Alanları kontrol edin.'
-        : 'Invalid request. Check fields.');
-      return;
+      payload = {
+        visitorsToday: vToday,
+        visitorsTotal: vTotal,
+        totalUsers: tUsers,
+        activeSessions: aSess,
+        lastDeploy: deploy
+      };
+    } else if (type === 'announcement') {
+      const title = announcementTitleInput.value.trim();
+      const msg   = announcementMessageInput.value.trim();
+      if (!title || !msg) {
+        setRequestStatus('error', lang === 'tr'
+          ? 'Lütfen duyuru başlığı ve metnini doldurun.'
+          : 'Please fill announcement title and message.');
+        return;
+      }
+      payload = { title, message: msg };
+    } else if (type === 'maintenance') {
+      const mode = maintenanceModeSelect.value;
+      const note = maintenanceNoteInput.value.trim();
+      if (!mode) {
+        setRequestStatus('error', lang === 'tr'
+          ? 'Lütfen bakım modu durumunu seçin.'
+          : 'Please select maintenance mode.');
+        return;
+      }
+      payload = { mode, note };
     }
 
-    setBoostStatus('', lang === 'tr'
-      ? 'Boost isteği gönderiliyor...'
-      : 'Sending boost request...');
-    boostConfirm.classList.remove('show');
+    setRequestStatus('', lang === 'tr'
+      ? 'İstek gönderiliyor...'
+      : 'Sending request...');
 
     try {
       const now = new Date();
       const createdAt = now.toLocaleString('tr-TR');
 
-      await addDoc(collection(db, 'boostRequests'), {
+      await addDoc(collection(db, 'siteRequests'), {
         userId: currentUser?.id || null,
         userName: currentUser?.name || '',
         userAccessKey: currentUser?.accessKey || '',
-        platform,
-        serviceType: service,
-        link,
-        status: 'Yönetici onayında',
+        type,
+        payload,
+        status: 'Beklemede',
         createdAt
       });
 
-      setBoostStatus('success', lang === 'tr'
-        ? 'Boost isteği gönderildi. Durumu aşağıdan takip edebilirsiniz.'
-        : 'Boost request sent. You can track its status below.');
+      setRequestStatus('success', lang === 'tr'
+        ? 'İstek gönderildi. Durumu aşağıdaki listeden takip edebilirsiniz.'
+        : 'Request sent. You can track it in the list below.');
 
-      boostPlatform.value = '';
-      boostService.value  = '';
-      boostLink.value     = '';
+      // Formu temizle
+      if (type === 'stats') {
+        visitorsTodayInput.value  = '';
+        visitorsTotalInput.value  = '';
+        totalUsersInput.value     = '';
+        activeSessionsInput.value = '';
+        lastDeployInput.value     = '';
+      } else if (type === 'announcement') {
+        announcementTitleInput.value   = '';
+        announcementMessageInput.value = '';
+      } else if (type === 'maintenance') {
+        maintenanceModeSelect.value = '';
+        maintenanceNoteInput.value  = '';
+      }
+      requestTypeSelect.value = '';
+      showRequestSection('');
 
-      await loadMyBoostRequests();
+      await loadMyRequests();
     } catch (err) {
       console.error(err);
-      setBoostStatus('error', lang === 'tr'
-        ? 'Boost isteği gönderilirken bir hata oluştu.'
-        : 'An error occurred while sending the boost request.');
+      setRequestStatus('error', lang === 'tr'
+        ? 'İstek gönderilirken bir hata oluştu.'
+        : 'An error occurred while sending the request.');
     }
   });
 
-  async function loadMyBoostRequests() {
-    boostTableBody.innerHTML = '';
-    boostDetailBox.classList.remove('show');
-    boostDetailBox.textContent = '';
+  function summarizeRequest(docData) {
+    const type = docData.type;
+    const p = docData.payload || {};
+    if (type === 'stats') {
+      return `Ziy: ${p.visitorsToday}/${p.visitorsTotal}, Kullanıcı: ${p.totalUsers}, Oturum: ${p.activeSessions}`;
+    }
+    if (type === 'announcement') {
+      return `Duyuru: ${p.title || ''}`;
+    }
+    if (type === 'maintenance') {
+      if (p.mode === 'open')  return 'Bakım modunu AÇ';
+      if (p.mode === 'close') return 'Bakım modunu KAPAT';
+      return 'Bakım modu isteği';
+    }
+    return '';
+  }
 
+  function typeLabel(type, lang) {
+    if (lang === 'en') {
+      if (type === 'stats')        return 'Stats Update';
+      if (type === 'announcement') return 'New Announcement';
+      if (type === 'maintenance')  return 'Maintenance';
+    } else {
+      if (type === 'stats')        return 'İstatistik';
+      if (type === 'announcement') return 'Duyuru';
+      if (type === 'maintenance')  return 'Bakım Modu';
+    }
+    return type || '-';
+  }
+
+  async function loadMyRequests() {
+    requestTableBody.innerHTML = '';
     try {
       let q;
       if (currentUser?.id) {
-        q = query(collection(db, 'boostRequests'), where('userId', '==', currentUser.id));
+        q = query(collection(db, 'siteRequests'), where('userId', '==', currentUser.id));
       } else if (currentUser?.accessKey) {
-        q = query(collection(db, 'boostRequests'), where('userAccessKey', '==', currentUser.accessKey));
+        q = query(collection(db, 'siteRequests'), where('userAccessKey', '==', currentUser.accessKey));
       } else {
         return;
       }
 
+      const lang = getLang();
       const snap = await getDocs(q);
       snap.forEach(docSnap => {
         const data = docSnap.data();
         const tr = document.createElement('tr');
-        tr.dataset.created  = data.createdAt || '-';
-        tr.dataset.status   = data.status || '-';
-        tr.dataset.platform = data.platform || '-';
-        tr.dataset.service  = data.serviceType || '-';
-        tr.dataset.link     = data.link || '-';
+        const tLabel = typeLabel(data.type, lang);
+        const summary = summarizeRequest(data);
 
         tr.innerHTML = `
-          <td>${data.platform || ''}</td>
-          <td>${data.serviceType || ''}</td>
-          <td><a class="boost-link" href="${data.link}" target="_blank">${data.link || ''}</a></td>
-          <td>${data.status || ''}</td>
-          <td><button class="detail-btn">Detay</button></td>
+          <td>${tLabel}</td>
+          <td><span class="request-summary" title="${summary.replace(/"/g, '&quot;')}">${summary}</span></td>
+          <td>${data.status || '-'}</td>
+          <td>${data.createdAt || '-'}</td>
         `;
-        boostTableBody.appendChild(tr);
-      });
-
-      document.querySelectorAll('.detail-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const tr = btn.closest('tr');
-          const created  = tr.dataset.created || '-';
-          const status   = tr.dataset.status  || '-';
-          const platform = tr.dataset.platform || '-';
-          const service  = tr.dataset.service  || '-';
-          const link     = tr.dataset.link     || '-';
-          const lang = getLang();
-
-          const text = (lang === 'tr')
-            ? `Platform : ${platform}
-Tür      : ${service}
-Durum    : ${status}
-Tarih    : ${created}
-Link     : ${link}`
-            : `Platform : ${platform}
-Type     : ${service}
-Status   : ${status}
-Created  : ${created}
-Link     : ${link}`;
-
-          boostDetailBox.textContent = text;
-          boostDetailBox.classList.add('show');
-        });
+        requestTableBody.appendChild(tr);
       });
     } catch (err) {
-      console.error('Boost isteklerini çekerken hata:', err);
+      console.error('İstekleri çekerken hata:', err);
     }
   }
 
   (async () => {
-    await loadMyBoostRequests();
+    await loadMyRequests();
   })();
 </script>
 
