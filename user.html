@@ -249,7 +249,7 @@
 
 <aside class="sidebar">
   <div>
-    <div class="sidebar-logo">👤 Kullanıceeeı Paneli</div>
+    <div class="sidebar-logo">👤 Kullanıcı Paneli</div>
     <div class="sidebar-sub">Bu panelde istatistik ve profil bilgilerinizi görürsünüz.</div>
   </div>
 
@@ -279,149 +279,6 @@
     <p id="userSubtitle">Admin tarafından atanan istatistiklerinizi ve profil bilgilerinizi buradan görüntüleyebilirsiniz.</p>
   </header>
 
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Sohbet Teması</title>
-<style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #0d1b2a;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-  }
-
-  /* Sohbet alanı */
-  .chat-container {
-    flex: 1;
-    padding: 20px;
-    background-color: #0d1b2a;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* Mesajlar */
-  .message {
-    display: flex;
-    margin-bottom: 10px;
-  }
-
-  /* Sol taraftaki mesajlar (kullanıcı) */
-  .left {
-    justify-content: flex-start;
-  }
-
-  /* Sağ taraftaki mesajlar (kullanıcı dışında) */
-  .right {
-    justify-content: flex-end;
-  }
-
-  /* Baloncuk tarzı */
-  .bubble {
-    max-width: 60%;
-    padding: 10px 15px;
-    border-radius: 20px;
-    font-size: 14px;
-    color: #fff;
-  }
-
-  /* Sol baloncuk renkleri */
-  .left .bubble {
-    background-color: #3b497a;
-    border-top-left-radius: 0;
-  }
-
-  /* Sağ baloncuk renkleri */
-  .right .bubble {
-    background-color: #4a69ad;
-    border-top-right-radius: 0;
-  }
-
-  /* Mesaj giriş alanı */
-  .input-area {
-    display: flex;
-    padding: 10px 20px;
-    background-color: #1b263b;
-  }
-
-  #messageInput {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    border-radius: 20px;
-    outline: none;
-    font-size: 14px;
-  }
-
-  button {
-    margin-left: 10px;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 20px;
-    background-color: #4a69ad;
-    color: #fff;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s;
-  }
-
-  button:hover {
-    background-color: #3b497a;
-  }
-</style>
-</head>
-<body>
-
-<!-- Sohbet alanı -->
-<div class="chat-container" id="chatContainer">
-  <!-- Örnek mesajlar -->
-  <div class="message left">
-    <div class="bubble">Merhaba! Nasıl gidiyor?</div>
-  </div>
-  <div class="message right">
-    <div class="bubble">İyiyim, teşekkür ederim! Sen nasılsın?</div>
-  </div>
-</div>
-
-<!-- Mesaj yazma alanı -->
-<div class="input-area">
-  <input type="text" id="messageInput" placeholder="Mesajınızı yazın..." />
-  <button onclick="sendMessage()">Gönder</button>
-</div>
-
-<script>
-  function sendMessage() {
-    const input = document.getElementById('messageInput');
-    const messageText = input.value.trim();
-    if (messageText === '') return;
-
-    const container = document.getElementById('chatContainer');
-
-    // Yeni mesaj oluştur
-    const messageDiv = document.createElement('div');
-    messageDiv.className = 'message right';
-
-    const bubbleDiv = document.createElement('div');
-    bubbleDiv.className = 'bubble';
-    bubbleDiv.innerText = messageText;
-
-    messageDiv.appendChild(bubbleDiv);
-    container.appendChild(messageDiv);
-
-    input.value = '';
-    // Otomatik kaydırma
-    container.scrollTop = container.scrollHeight;
-  }
-</script>
-
-</body>
-</html>
-  
   <!-- Panel (gösterge + statü) -->
   <section id="dashboardSection">
     <section class="card" style="max-width:620px;">
@@ -630,4 +487,4 @@
 </script>
 
 </body>
-</html>
+</html> 
