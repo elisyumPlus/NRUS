@@ -62,6 +62,18 @@
             0%, 80%, 100% { transform: scale(0); }
             40% { transform: scale(1); }
         }
+
+        /* Özel Kaydırma Çubuğu */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center p-4 md:p-8">
@@ -140,7 +152,7 @@
                     <p class="text-xs text-slate-500 mb-2 font-semibold uppercase">Müvekkile Soru Sor (AI Destekli)</p>
                     <div class="flex gap-2">
                         <input id="clientQuery" type="text" placeholder="Müvekkiline bir şey sor..." class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <button onclick="askClient()" class="bg-blue-600 hover:bg-blue-500 px-3 py-2 rounded-lg text-white">Sor</button>
+                        <button id="askBtn" onclick="askClient()" class="bg-blue-600 hover:bg-blue-500 px-3 py-2 rounded-lg text-white transition-colors">Sor</button>
                     </div>
                 </div>
             </div>
@@ -158,36 +170,55 @@
     </div>
 
     <script>
-        const apiKey = ""; // API key otomatik sağlanır
+        const apiKey = ""; // API key otomatik sağlanır, 403 hatası alıyorsanız API anahtarı henüz atanmamıştır.
         let currentCase = null;
 
-        // Başlangıçta rastgele dava oluştur
-        window.onload = async () => {
-            await generateNewCase();
-        };
-
-        async function aiCall(prompt, systemInstruction, isJson = false) {
+        // Üstel geri çekilme ile AI çağrısı yapan yardımcı fonksiyon
+        async function aiCallWithRetry(prompt, systemInstruction, isJson = false, retries = 5) {
             const payload = {
                 contents: [{ parts: [{ text: prompt }] }],
                 systemInstruction: { parts: [{ text: systemInstruction }] }
             };
             if (isJson) {
-                payload.generationConfig = { responseMimeType: "application/json" };
+                payload.generationConfig = { 
+                    responseMimeType: "application/json"
+                };
             }
 
-            try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const data = await response.json();
-                return data.candidates?.[0]?.content?.parts?.[0]?.text || null;
-            } catch (error) {
-                console.error("AI Error:", error);
-                return null;
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        if (response.status === 403) throw new Error("API Key Hatası (403). Lütfen ortamın hazır olduğundan emin olun.");
+                        throw new Error(`HTTP Error: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    return data.candidates?.[0]?.content?.parts?.[0]?.text || null;
+                } catch (error) {
+                    if (i === retries - 1) throw error;
+                    const delay = Math.pow(2, i) * 1000;
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                }
             }
+            return null;
         }
+
+        window.onload = async () => {
+            try {
+                await generateNewCase();
+            } catch (err) {
+                console.error("Başlatma hatası:", err);
+                document.querySelector('#loadingScreen p').innerText = "Bağlantı hatası oluştu. Lütfen sayfayı yenileyin.";
+                document.querySelector('#loadingScreen p').classList.remove('animate-pulse');
+                document.querySelector('#loadingScreen p').classList.add('text-red-400');
+            }
+        };
 
         async function generateNewCase() {
             const systemPrompt = `
@@ -205,7 +236,7 @@
                 }
             `;
 
-            const result = await aiCall("Bana yeni bir dava dosyası oluştur.", systemPrompt, true);
+            const result = await aiCallWithRetry("Bana yeni bir dava dosyası oluştur.", systemPrompt, true);
             if (result) {
                 currentCase = JSON.parse(result);
                 updateUIWithCase();
@@ -219,26 +250,35 @@
             document.getElementById('caseDescription').innerText = currentCase.caseDescription;
             document.getElementById('clientNameHeader').innerText = `Müvekkil (${currentCase.clientName})`;
             
-            document.getElementById('courtChat').innerHTML = `<div class="bg-red-900/20 border border-red-800/30 p-3 rounded-lg"><strong>Savcı:</strong> "${currentCase.prosecutorOpening}"</div>`;
-            document.getElementById('clientChat').innerHTML = `<div>"${currentCase.clientOpening}"</div>`;
+            document.getElementById('courtChat').innerHTML = `<div class="bg-red-900/20 border border-red-800/30 p-3 rounded-lg shadow-sm"><strong>Savcı:</strong> "${currentCase.prosecutorOpening}"</div>`;
+            document.getElementById('clientChat').innerHTML = `<div class="p-2">"${currentCase.clientOpening}"</div>`;
             
             document.getElementById('loadingScreen').classList.add('hidden');
         }
 
         async function askClient() {
             const queryInput = document.getElementById('clientQuery');
+            const askBtn = document.getElementById('askBtn');
             const query = queryInput.value.trim();
-            if (!query) return;
+            if (!query || askBtn.disabled) return;
 
+            askBtn.disabled = true;
             const clientChat = document.getElementById('clientChat');
-            clientChat.innerHTML += `<div class="text-right text-blue-300"><strong>Sen:</strong> ${query}</div>`;
+            clientChat.innerHTML += `<div class="text-right text-blue-300 mt-2"><strong>Sen:</strong> ${query}</div>`;
             queryInput.value = "";
-
-            const systemMsg = `Sen bu davanın müvekkilisin: ${JSON.stringify(currentCase)}. Adın ${currentCase.clientName}. Avukatın sana bir soru sordu. Suçsuz olduğunu iddia ederek ama davanın detaylarına sadık kalarak cevap ver.`;
-            const response = await aiCall(query, systemMsg);
-            
-            clientChat.innerHTML += `<div><strong>${currentCase.clientName}:</strong> ${response}</div>`;
             clientChat.scrollTop = clientChat.scrollHeight;
+
+            const systemMsg = `Sen bu davanın müvekkilisin: ${JSON.stringify(currentCase)}. Adın ${currentCase.clientName}. Avukatın sana bir soru sordu. Suçsuz olduğunu iddia ederek ama davanın detaylarına sadık kalarak cevap ver. Yanıtların kısa ve öz olsun.`;
+            
+            try {
+                const response = await aiCallWithRetry(query, systemMsg);
+                clientChat.innerHTML += `<div class="mt-2"><strong>${currentCase.clientName}:</strong> ${response}</div>`;
+            } catch (err) {
+                clientChat.innerHTML += `<div class="text-red-400 mt-2 italic text-xs">Müvekkil şu an konuşamıyor (Bağlantı Hatası).</div>`;
+            } finally {
+                askBtn.disabled = false;
+                clientChat.scrollTop = clientChat.scrollHeight;
+            }
         }
 
         async function submitDefense() {
@@ -255,23 +295,23 @@
             typing.classList.remove('hidden');
 
             const courtChat = document.getElementById('courtChat');
-            courtChat.innerHTML += `<div class="bg-blue-900/20 border border-blue-800/30 p-3 rounded-lg"><strong>Savunma:</strong> ${defense}</div>`;
+            courtChat.innerHTML += `<div class="bg-blue-900/20 border border-blue-800/30 p-3 rounded-lg mt-4"><strong>Savunma:</strong> ${defense}</div>`;
             courtChat.scrollTop = courtChat.scrollHeight;
 
             const systemPrompt = `
                 Sen sert ama adil bir Hakimil'sin. 
                 Dava Dosyası: ${JSON.stringify(currentCase)}.
                 Kullanıcının yazdığı savunmayı analiz et. 
-                Savunma, davanın temel delillerini çürütmeye çalışıyor mu? Mantıklı mı? 
+                Savunma, davanın temel delillerini çürütmeye çalışıyor mu? Mantıklı mı? Hukuki bir temeli var mı yoksa sadece duygusal mı?
                 Yanıtını şu JSON formatında ver: {"decision": "BERAAT" veya "MAHKUM", "reasoning": "Hakimin gerekçeli kararı"}.
             `;
 
             try {
-                const responseText = await aiCall(defense, systemPrompt, true);
+                const responseText = await aiCallWithRetry(defense, systemPrompt, true);
                 const result = JSON.parse(responseText);
                 
                 typing.classList.add('hidden');
-                courtChat.innerHTML += `<div class="bg-amber-900/40 border border-amber-600/50 p-3 rounded-lg mt-4"><strong>HAKİM KARARI:</strong> ${result.reasoning}</div>`;
+                courtChat.innerHTML += `<div class="bg-amber-900/40 border border-amber-600/50 p-3 rounded-lg mt-4 shadow-lg"><strong>HAKİM KARARI:</strong> ${result.reasoning}</div>`;
                 courtChat.scrollTop = courtChat.scrollHeight;
 
                 setTimeout(() => {
@@ -289,6 +329,7 @@
                 btn.disabled = false;
                 btn.innerText = "KARARI BEKLE";
                 typing.classList.add('hidden');
+                alert("Karar verilirken bir hata oluştu. Lütfen tekrar deneyin.");
             }
         }
     </script>
