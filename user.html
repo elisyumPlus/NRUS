@@ -6,184 +6,273 @@
     <title>Adalet Terazisi: Avukat Simülasyonu</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;1,400&display=swap');
         
+        :root {
+            --primary-gold: #c5a059;
+            --dark-bg: #0a0c10;
+            --panel-bg: rgba(17, 24, 39, 0.8);
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0f172a;
-            color: #f1f5f9;
+            background: radial-gradient(circle at top, #1e293b 0%, #0a0c10 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
         }
 
-        .court-title {
-            font-family: 'Playfair Display', serif;
-        }
+        .court-header-font { font-family: 'Cinzel', serif; }
+        .serif-font { font-family: 'Playfair Display', serif; }
 
         .glass-panel {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--panel-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(197, 160, 89, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
         }
 
-        .jail-overlay {
+        .gold-border { border-color: var(--primary-gold); }
+        .gold-text { color: var(--primary-gold); }
+
+        .gold-gradient-btn {
+            background: linear-gradient(135deg, #c5a059 0%, #8e6d2f 100%);
+            color: #000;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .gold-gradient-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(197, 160, 89, 0.4);
+            filter: brightness(1.1);
+        }
+
+        .overlay {
             background: rgba(0, 0, 0, 0.9);
-            display: none;
             position: fixed;
             inset: 0;
             z-index: 100;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-direction: column;
+            backdrop-filter: blur(8px);
         }
 
-        .loading-overlay {
-            background: #0f172a;
-            position: fixed;
-            inset: 0;
-            z-index: 200;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
+        .chat-bubble-prosecutor {
+            background: rgba(127, 29, 29, 0.2);
+            border-left: 3px solid #ef4444;
+        }
+
+        .chat-bubble-defense {
+            background: rgba(30, 58, 138, 0.2);
+            border-left: 3px solid #3b82f6;
         }
 
         .typing-dot {
-            width: 8px;
-            height: 8px;
-            background: #94a3b8;
+            width: 6px;
+            height: 6px;
+            background: var(--primary-gold);
             border-radius: 50%;
             display: inline-block;
             animation: bounce 1.4s infinite ease-in-out both;
         }
-        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
-        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
 
         @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1); }
+            0%, 80%, 100% { transform: scale(0.3); opacity: 0.3; }
+            40% { transform: scale(1); opacity: 1; }
         }
 
-        /* Özel Kaydırma Çubuğu */
-        ::-webkit-scrollbar {
-            width: 6px;
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .config-btn {
+            @apply border border-white/10 py-2 px-4 rounded-lg text-xs font-semibold transition-all;
         }
-        ::-webkit-scrollbar-track {
-            background: #1e293b;
+        .config-btn.active {
+            @apply border-amber-500 bg-amber-500/20 text-amber-500;
         }
-        ::-webkit-scrollbar-thumb {
-            background: #475569;
-            border-radius: 10px;
-        }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--primary-gold); border-radius: 10px; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center p-4 md:p-8">
+<body class="p-4 md:p-8">
+
+    <!-- Ayar ve Başlangıç Ekranı -->
+    <div id="difficultyScreen" class="overlay">
+        <div class="text-center max-w-xl p-10 glass-panel rounded-3xl border-b-4 gold-border fade-in">
+            <div class="mb-6">
+                <span class="text-5xl mb-4 block">⚖️</span>
+                <h2 class="text-4xl font-bold court-header-font gold-text mb-2">ADALET TERAZİSİ</h2>
+                <p class="text-slate-400 serif-font italic">Hukuk Simülasyonu Ayarları</p>
+            </div>
+            
+            <div class="space-y-6">
+                <!-- Zorluk Seçimi -->
+                <div class="text-left">
+                    <label class="text-[10px] gold-text font-bold uppercase tracking-widest mb-3 block">1. Zorluk Seviyesi</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="setDifficulty('Kolay')" id="btn-Kolay" class="config-btn">Kolay</button>
+                        <button onclick="setDifficulty('Orta')" id="btn-Orta" class="config-btn active">Orta</button>
+                        <button onclick="setDifficulty('Zor')" id="btn-Zor" class="config-btn">Zor</button>
+                    </div>
+                </div>
+
+                <!-- Konuşma Uzunluğu Seçimi -->
+                <div class="text-left">
+                    <label class="text-[10px] gold-text font-bold uppercase tracking-widest mb-3 block">2. Konuşma / Detay Seviyesi</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="setLength('Kısa')" id="len-Kısa" class="config-btn">Kısa</button>
+                        <button onclick="setLength('Orta')" id="len-Orta" class="config-btn active">Orta</button>
+                        <button onclick="setLength('Uzun')" id="len-Uzun" class="config-btn">Uzun</button>
+                    </div>
+                </div>
+
+                <button onclick="startGame()" class="gold-gradient-btn w-full py-4 rounded-xl mt-4">Duruşmayı Başlat</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Yükleme Ekranı -->
-    <div id="loadingScreen" class="loading-overlay">
+    <div id="loadingScreen" class="overlay hidden">
         <div class="text-center">
-            <div class="mb-4 text-amber-500 text-4xl">⚖️</div>
-            <h2 class="text-2xl font-bold court-title mb-2">Yeni Dava Dosyası Hazırlanıyor...</h2>
-            <p class="text-slate-400 animate-pulse">Yapay zeka delilleri ve tanıkları kurguluyor.</p>
+            <div class="relative w-24 h-24 mx-auto mb-6">
+                <div class="absolute inset-0 border-4 border-amber-900/20 rounded-full"></div>
+                <div class="absolute inset-0 border-4 border-t-amber-500 rounded-full animate-spin"></div>
+                <div class="absolute inset-0 flex items-center justify-center text-3xl">⚖️</div>
+            </div>
+            <h2 class="text-2xl font-bold court-header-font gold-text mb-2 tracking-widest">DOSYA İNCELENİYOR</h2>
+            <p id="loadingStatus" class="text-slate-500 serif-font italic animate-pulse">Yapay zeka davanın detaylarını örüyor...</p>
         </div>
     </div>
 
-    <!-- Hapishane Ekranı -->
-    <div id="jailScreen" class="jail-overlay hidden text-center p-6">
-        <h1 class="text-6xl font-bold text-red-600 mb-4 court-title">MAHKUM EDİLDİNİZ</h1>
-        <p id="jailReason" class="text-xl mb-8 max-w-lg">Savunmanız yetersiz bulundu.</p>
-        <button onclick="location.reload()" class="bg-red-700 hover:bg-red-600 text-white font-bold py-3 px-8 rounded-full transition-all">YENİDEN DENE</button>
+    <!-- Karar Ekranları -->
+    <div id="jailScreen" class="overlay hidden text-center p-6">
+        <div class="max-w-xl glass-panel p-12 rounded-3xl border-t-8 border-red-600 fade-in">
+            <h1 class="text-6xl font-bold text-red-600 mb-6 court-header-font tracking-tighter">MAHKUMİYET</h1>
+            <p id="jailReason" class="text-lg mb-10 serif-font leading-relaxed italic text-slate-300">---</p>
+            <button onclick="location.reload()" class="px-10 py-4 bg-red-700 hover:bg-red-600 text-white font-bold rounded-lg transition-all shadow-lg">BAŞTAN BAŞLA</button>
+        </div>
     </div>
 
-    <!-- Kazanan Ekranı -->
-    <div id="winScreen" class="jail-overlay hidden text-center p-6 bg-slate-900">
-        <h1 class="text-6xl font-bold text-green-500 mb-4 court-title">BERAAT!</h1>
-        <p id="winReason" class="text-xl mb-8 max-w-lg">Adalet yerini buldu.</p>
-        <button onclick="location.reload()" class="bg-green-700 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full transition-all">YENİ DAVA AL</button>
+    <div id="winScreen" class="overlay hidden text-center p-6">
+        <div class="max-w-xl glass-panel p-12 rounded-3xl border-t-8 border-green-500 fade-in">
+            <h1 class="text-6xl font-bold text-green-500 mb-6 court-header-font tracking-tighter">BERAAT</h1>
+            <p id="winReason" class="text-lg mb-10 serif-font leading-relaxed italic text-slate-300">---</p>
+            <button onclick="location.reload()" class="px-10 py-4 bg-green-700 hover:bg-green-600 text-white font-bold rounded-lg transition-all shadow-lg">YENİ DAVA</button>
+        </div>
     </div>
 
-    <div class="max-w-4xl w-full space-y-6">
-        <header class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-amber-500 court-title tracking-tight">ADALET TERAZİSİ</h1>
-            <p class="text-slate-400">Yapay Zeka Destekli Değişken Dava Simülasyonu</p>
+    <div class="max-w-5xl w-full mx-auto space-y-6 fade-in">
+        <header class="flex flex-col md:flex-row justify-between items-end border-b border-amber-500/20 pb-4 mb-8">
+            <div>
+                <h1 class="text-4xl font-extrabold gold-text court-header-font tracking-widest uppercase">Adalet Terazisi</h1>
+                <p class="text-slate-500 text-xs tracking-[0.3em] uppercase mt-1">Avukatlık & Hukuk Simülasyonu</p>
+            </div>
+            <div class="flex gap-2 mt-4 md:mt-0">
+                <div id="difficultyBadge" class="bg-amber-950/30 border border-amber-500/20 px-4 py-1 rounded-full text-[10px] gold-text font-bold uppercase tracking-widest italic">Zorluk: Orta</div>
+                <div id="lengthBadge" class="bg-blue-950/30 border border-blue-500/20 px-4 py-1 rounded-full text-[10px] text-blue-400 font-bold uppercase tracking-widest italic">Detay: Orta</div>
+            </div>
         </header>
 
-        <!-- Dava Bilgisi -->
-        <div class="glass-panel p-6 rounded-2xl shadow-xl">
-            <div class="flex items-center justify-between mb-4">
-                <span id="caseNo" class="bg-amber-900/50 text-amber-200 text-xs font-bold px-3 py-1 rounded-full border border-amber-700/50 uppercase">Dosya No: ---</span>
-                <span id="caseType" class="text-slate-400 italic">Yükleniyor...</span>
+        <!-- Dava Dosyası Panel -->
+        <div class="glass-panel rounded-2xl overflow-hidden">
+            <div class="bg-amber-500/5 px-6 py-3 border-b border-amber-500/10 flex justify-between items-center">
+                <span id="caseNo" class="text-[10px] font-bold tracking-widest text-slate-500">DOSYA NO: ---</span>
+                <span id="caseType" class="text-[10px] font-bold tracking-widest gold-text uppercase">---</span>
             </div>
-            <h2 id="caseTitle" class="text-2xl font-semibold mb-2 text-white">Vaka Başlığı</h2>
-            <p id="caseDescription" class="text-slate-300 leading-relaxed">
-                Dava detayları hazırlanıyor...
-            </p>
+            <div class="p-8">
+                <h2 id="caseTitle" class="text-3xl font-bold text-white serif-font mb-4 uppercase">Vaka Başlığı</h2>
+                <div class="relative">
+                    <div class="absolute -left-4 top-0 bottom-0 w-1 bg-amber-500/20"></div>
+                    <p id="caseDescription" class="text-slate-400 leading-relaxed italic serif-font text-lg">Dava dosyası hazırlanırken lütfen bekleyin...</p>
+                </div>
+            </div>
         </div>
 
-        <!-- Mahkeme Salonu -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Savcı/Hakim Tarafı -->
-            <div class="glass-panel p-6 rounded-2xl flex flex-col h-[400px]">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-10 h-10 bg-red-900 rounded-full flex items-center justify-center text-xl">⚖️</div>
-                    <h3 class="font-bold text-red-400 uppercase tracking-wider">İddia Makamı & Hakim</h3>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Sol Panel: Mahkeme Salonu -->
+            <div class="flex flex-col space-y-4">
+                <div class="flex items-center space-x-2 text-xs font-bold tracking-[0.2em] text-red-500/80 uppercase">
+                    <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                    <span>İddia Makamı & Hakim</span>
                 </div>
-                <div id="courtChat" class="flex-1 overflow-y-auto space-y-4 pr-2 text-sm">
-                    <!-- Savcı iddiası buraya gelecek -->
-                </div>
-                <div id="typingIndicator" class="hidden mt-2 p-2">
-                    <div class="flex gap-1">
-                        <span class="typing-dot"></span>
-                        <span class="typing-dot"></span>
-                        <span class="typing-dot"></span>
+                <div class="glass-panel rounded-2xl flex flex-col h-[450px]">
+                    <div id="courtChat" class="flex-1 overflow-y-auto p-6 space-y-6"></div>
+                    <div id="typingIndicator" class="hidden px-6 py-4">
+                        <div class="flex gap-1"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Müvekkil Tarafı -->
-            <div class="glass-panel p-6 rounded-2xl flex flex-col h-[400px]">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-10 h-10 bg-blue-900 rounded-full flex items-center justify-center text-xl">👤</div>
-                    <h3 id="clientNameHeader" class="font-bold text-blue-400 uppercase tracking-wider">Müvekkil</h3>
+            <!-- Sağ Panel: Müvekkil Görüşmesi -->
+            <div class="flex flex-col space-y-4">
+                <div class="flex items-center space-x-2 text-xs font-bold tracking-[0.2em] text-blue-400 uppercase">
+                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                    <span id="clientNameHeader">Müvekkil Görüşmesi</span>
                 </div>
-                <div id="clientChat" class="flex-1 overflow-y-auto space-y-4 pr-2 text-sm italic text-slate-400">
-                    <!-- Müvekkil konuşmaları -->
-                </div>
-                <div class="mt-4 pt-4 border-t border-slate-700">
-                    <p class="text-xs text-slate-500 mb-2 font-semibold uppercase">Müvekkile Soru Sor (AI Destekli)</p>
-                    <div class="flex gap-2">
-                        <input id="clientQuery" type="text" placeholder="Müvekkiline bir şey sor..." class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <button id="askBtn" onclick="askClient()" class="bg-blue-600 hover:bg-blue-500 px-3 py-2 rounded-lg text-white transition-colors">Sor</button>
+                <div class="glass-panel rounded-2xl flex flex-col h-[450px]">
+                    <div id="clientChat" class="flex-1 overflow-y-auto p-6 space-y-4 serif-font text-slate-400 italic"></div>
+                    <div class="p-6 bg-black/20 border-t border-white/5">
+                        <div class="flex gap-2">
+                            <input id="clientQuery" type="text" placeholder="Müvekkilinize bir soru yöneltin..." class="flex-1 bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors placeholder:text-slate-600">
+                            <button id="askBtn" onclick="askClient()" class="bg-blue-600/20 hover:bg-blue-600/40 text-blue-400 border border-blue-500/30 px-6 py-3 rounded-xl text-sm font-bold transition-all">SOR</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Savunma Alanı -->
-        <div class="glass-panel p-6 rounded-2xl shadow-xl border-t-4 border-t-amber-500">
-            <label class="block mb-2 font-bold text-amber-400 uppercase tracking-widest text-sm">Nihai Savunmanızı Yazın</label>
-            <textarea id="defenseText" placeholder="Hakim Bey, müvekkilim suçsuzdur çünkü..." class="w-full h-32 bg-slate-800 border border-slate-700 rounded-xl p-4 text-white focus:outline-none focus:ring-2 focus:ring-amber-500 mb-4 transition-all"></textarea>
-            <div class="flex items-center justify-between">
-                <p class="text-xs text-slate-500 max-w-md">Dikkat: Savunmanızdaki mantık hataları veya delil yetersizliği doğrudan hapse düşmenize neden olabilir.</p>
-                <button id="submitDefense" onclick="submitDefense()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold py-3 px-8 rounded-xl shadow-lg shadow-amber-900/20 transition-all active:scale-95">KARARI BEKLE</button>
+        <!-- Alt Panel: Savunma Hazırlığı -->
+        <div class="glass-panel p-8 rounded-2xl border-b-4 gold-border">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-sm font-bold tracking-widest gold-text uppercase">Nihai Savunma Makamı</h3>
+                <span class="text-[10px] text-slate-500 italic uppercase">Karar tebliğ edilmeden önceki son sözünüz.</span>
+            </div>
+            <textarea id="defenseText" placeholder="Sayın Hakim, müvekkilim hakkında..." class="w-full h-32 bg-slate-900/40 border border-white/5 rounded-2xl p-6 text-white serif-font text-lg focus:outline-none focus:border-amber-500/50 transition-all mb-6"></textarea>
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="text-[10px] text-slate-500 uppercase tracking-widest leading-loose">
+                    <p>• Mantıksal tutarlılık beraat şansını artırır.</p>
+                    <p>• Zorluk seviyesine göre hakimin kriterleri değişir.</p>
+                </div>
+                <button id="submitDefense" onclick="submitDefense()" class="gold-gradient-btn px-12 py-4 rounded-xl shadow-2xl active:scale-95 disabled:opacity-50">KARARI TEBLİĞ ET</button>
             </div>
         </div>
     </div>
 
     <script>
-        const apiKey = ""; // API key otomatik sağlanır, 403 hatası alıyorsanız API anahtarı henüz atanmamıştır.
+        const apiKey = ""; 
         let currentCase = null;
+        let selectedDifficulty = "Orta";
+        let selectedLength = "Orta";
 
-        // Üstel geri çekilme ile AI çağrısı yapan yardımcı fonksiyon
+        function setDifficulty(diff) {
+            selectedDifficulty = diff;
+            ["Kolay", "Orta", "Zor"].forEach(d => {
+                document.getElementById(`btn-${d}`).classList.toggle('active', d === diff);
+            });
+            document.getElementById('difficultyBadge').innerText = `Zorluk: ${diff}`;
+        }
+
+        function setLength(len) {
+            selectedLength = len;
+            ["Kısa", "Orta", "Uzun"].forEach(l => {
+                document.getElementById(`len-${l}`).classList.toggle('active', l === len);
+            });
+            document.getElementById('lengthBadge').innerText = `Detay: ${len}`;
+        }
+
         async function aiCallWithRetry(prompt, systemInstruction, isJson = false, retries = 5) {
             const payload = {
                 contents: [{ parts: [{ text: prompt }] }],
-                systemInstruction: { parts: [{ text: systemInstruction }] }
+                systemInstruction: { parts: [{ text: systemInstruction }] },
+                generationConfig: isJson ? { responseMimeType: "application/json" } : {}
             };
-            if (isJson) {
-                payload.generationConfig = { 
-                    responseMimeType: "application/json"
-                };
-            }
 
             for (let i = 0; i < retries; i++) {
                 try {
@@ -192,67 +281,63 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
                     });
-
-                    if (!response.ok) {
-                        if (response.status === 403) throw new Error("API Key Hatası (403). Lütfen ortamın hazır olduğundan emin olun.");
-                        throw new Error(`HTTP Error: ${response.status}`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        return data.candidates?.[0]?.content?.parts?.[0]?.text || null;
                     }
-
-                    const data = await response.json();
-                    return data.candidates?.[0]?.content?.parts?.[0]?.text || null;
-                } catch (error) {
-                    if (i === retries - 1) throw error;
-                    const delay = Math.pow(2, i) * 1000;
-                    await new Promise(resolve => setTimeout(resolve, delay));
-                }
+                } catch (e) {}
+                await new Promise(r => setTimeout(r, Math.pow(2, i) * 1000));
             }
-            return null;
+            throw new Error("Bağlantı hatası.");
         }
 
-        window.onload = async () => {
-            try {
-                await generateNewCase();
-            } catch (err) {
-                console.error("Başlatma hatası:", err);
-                document.querySelector('#loadingScreen p').innerText = "Bağlantı hatası oluştu. Lütfen sayfayı yenileyin.";
-                document.querySelector('#loadingScreen p').classList.remove('animate-pulse');
-                document.querySelector('#loadingScreen p').classList.add('text-red-400');
-            }
-        };
+        async function startGame() {
+            document.getElementById('difficultyScreen').classList.add('hidden');
+            document.getElementById('loadingScreen').classList.remove('hidden');
+            await generateNewCase();
+        }
 
         async function generateNewCase() {
             const systemPrompt = `
-                Sen yaratıcı bir hukuk senaryosu yazarıısın. 
-                Rastgele bir dava senaryosu oluştur. Suç şunlardan biri olabilir: Hırsızlık, Siber Suç, Dolandırıcılık, İftira veya Hafif Yaralama. 
-                Yanıtını şu JSON formatında ver:
+                Sen prestijli bir hukuk senaryosu yazarıısın. 
+                Zorluk seviyesi: ${selectedDifficulty}. 
+                Konuşma/Detay seviyesi: ${selectedLength}.
+                Eğer detay seviyesi 'Uzun' ise davanın hikayesini ve delilleri çok katmanlı ve edebi bir dille yaz. 
+                Eğer 'Kısa' ise sadece ana unsurları ver.
+                Yanıt Formatı (JSON):
                 {
-                    "caseNo": "2024/XXX",
+                    "caseNo": "2024/ESAS-XXX",
                     "caseType": "Suç Türü",
-                    "caseTitle": "Vaka Adı",
-                    "caseDescription": "Olayın detaylı özeti. Sanığın aleyhine 1 temel delil ve sanığın 1 zayıf savunması dahil olsun.",
+                    "caseTitle": "Vaka Başlığı",
+                    "caseDescription": "Resmi ve seçilen uzunlukta olay özeti.",
                     "clientName": "Müvekkil Adı",
-                    "prosecutorOpening": "Savcının ilk suçlaması",
-                    "clientOpening": "Müvekkilin sana söylediği ilk cümle"
+                    "prosecutorOpening": "Savcının suçlaması",
+                    "clientOpening": "Müvekkilin ilk beyanı"
                 }
             `;
-
-            const result = await aiCallWithRetry("Bana yeni bir dava dosyası oluştur.", systemPrompt, true);
-            if (result) {
+            try {
+                const result = await aiCallWithRetry("Yeni bir dava dosyası kurgula.", systemPrompt, true);
                 currentCase = JSON.parse(result);
-                updateUIWithCase();
+                updateUI();
+            } catch (err) {
+                document.getElementById('loadingStatus').innerText = "Hata! Yenileyin.";
             }
         }
 
-        function updateUIWithCase() {
-            document.getElementById('caseNo').innerText = `Dosya No: ${currentCase.caseNo}`;
+        function updateUI() {
+            document.getElementById('caseNo').innerText = `DOSYA NO: ${currentCase.caseNo}`;
             document.getElementById('caseType').innerText = currentCase.caseType;
             document.getElementById('caseTitle').innerText = currentCase.caseTitle;
             document.getElementById('caseDescription').innerText = currentCase.caseDescription;
-            document.getElementById('clientNameHeader').innerText = `Müvekkil (${currentCase.clientName})`;
+            document.getElementById('clientNameHeader').innerText = currentCase.clientName;
             
-            document.getElementById('courtChat').innerHTML = `<div class="bg-red-900/20 border border-red-800/30 p-3 rounded-lg shadow-sm"><strong>Savcı:</strong> "${currentCase.prosecutorOpening}"</div>`;
-            document.getElementById('clientChat').innerHTML = `<div class="p-2">"${currentCase.clientOpening}"</div>`;
-            
+            document.getElementById('courtChat').innerHTML = `
+                <div class="chat-bubble-prosecutor p-4 rounded-2xl fade-in text-sm leading-relaxed">
+                    <span class="block text-[10px] font-bold text-red-400 mb-1 uppercase tracking-tighter">İddia Makamı</span>
+                    "${currentCase.prosecutorOpening}"
+                </div>
+            `;
+            document.getElementById('clientChat').innerHTML = `<div class="fade-in leading-relaxed">"${currentCase.clientOpening}"</div>`;
             document.getElementById('loadingScreen').classList.add('hidden');
         }
 
@@ -263,73 +348,74 @@
             if (!query || askBtn.disabled) return;
 
             askBtn.disabled = true;
-            const clientChat = document.getElementById('clientChat');
-            clientChat.innerHTML += `<div class="text-right text-blue-300 mt-2"><strong>Sen:</strong> ${query}</div>`;
+            const chat = document.getElementById('clientChat');
+            chat.innerHTML += `<div class="text-right text-blue-300 mt-4 text-[10px] font-bold uppercase tracking-widest">AVUKAT: ${query}</div>`;
             queryInput.value = "";
-            clientChat.scrollTop = clientChat.scrollHeight;
+            chat.scrollTop = chat.scrollHeight;
 
-            const systemMsg = `Sen bu davanın müvekkilisin: ${JSON.stringify(currentCase)}. Adın ${currentCase.clientName}. Avukatın sana bir soru sordu. Suçsuz olduğunu iddia ederek ama davanın detaylarına sadık kalarak cevap ver. Yanıtların kısa ve öz olsun.`;
-            
+            const systemMsg = `Sen bu davanın müvekkilisin. Zorluk: ${selectedDifficulty}. Konuşma Uzunluğu: ${selectedLength}. Avukatının sorusuna seçilen uzunlukta ve resmiyetle cevap ver.`;
             try {
                 const response = await aiCallWithRetry(query, systemMsg);
-                clientChat.innerHTML += `<div class="mt-2"><strong>${currentCase.clientName}:</strong> ${response}</div>`;
-            } catch (err) {
-                clientChat.innerHTML += `<div class="text-red-400 mt-2 italic text-xs">Müvekkil şu an konuşamıyor (Bağlantı Hatası).</div>`;
+                chat.innerHTML += `<div class="mt-2 text-slate-300 border-l border-white/10 pl-4 italic">"${response}"</div>`;
             } finally {
                 askBtn.disabled = false;
-                clientChat.scrollTop = clientChat.scrollHeight;
+                chat.scrollTop = chat.scrollHeight;
             }
         }
 
         async function submitDefense() {
             const defense = document.getElementById('defenseText').value.trim();
             if (defense.length < 20) {
-                alert("Savunmanız çok kısa! Hakimi ikna etmek için daha fazla detay yazmalısınız.");
+                alert("Savunma yetersiz! Müvekkilinizi savunmak için daha fazla argüman sunmalısınız.");
                 return;
             }
 
             const btn = document.getElementById('submitDefense');
             const typing = document.getElementById('typingIndicator');
             btn.disabled = true;
-            btn.innerText = "HAKİM DÜŞÜNÜYOR...";
             typing.classList.remove('hidden');
 
             const courtChat = document.getElementById('courtChat');
-            courtChat.innerHTML += `<div class="bg-blue-900/20 border border-blue-800/30 p-3 rounded-lg mt-4"><strong>Savunma:</strong> ${defense}</div>`;
+            courtChat.innerHTML += `
+                <div class="chat-bubble-defense p-4 rounded-2xl fade-in text-sm leading-relaxed">
+                    <span class="block text-[10px] font-bold text-blue-400 mb-1 uppercase tracking-tighter">Müdafaa Makamı</span>
+                    "${defense}"
+                </div>
+            `;
             courtChat.scrollTop = courtChat.scrollHeight;
 
             const systemPrompt = `
-                Sen sert ama adil bir Hakimil'sin. 
-                Dava Dosyası: ${JSON.stringify(currentCase)}.
-                Kullanıcının yazdığı savunmayı analiz et. 
-                Savunma, davanın temel delillerini çürütmeye çalışıyor mu? Mantıklı mı? Hukuki bir temeli var mı yoksa sadece duygusal mı?
-                Yanıtını şu JSON formatında ver: {"decision": "BERAAT" veya "MAHKUM", "reasoning": "Hakimin gerekçeli kararı"}.
+                Sen Ağır Ceza Hakimisin. Zorluk: ${selectedDifficulty}. Karar Uzunluğu: ${selectedLength}.
+                Dava: ${JSON.stringify(currentCase)}. 
+                Savunmayı analiz et ve kararı seçilen uzunlukta gerekçelendir.
+                Yanıt (JSON): {"decision": "BERAAT" veya "MAHKUM", "reasoning": "Resmi hakim gerekçesi"}
             `;
 
             try {
-                const responseText = await aiCallWithRetry(defense, systemPrompt, true);
-                const result = JSON.parse(responseText);
-                
+                const res = await aiCallWithRetry(defense, systemPrompt, true);
+                const result = JSON.parse(res);
                 typing.classList.add('hidden');
-                courtChat.innerHTML += `<div class="bg-amber-900/40 border border-amber-600/50 p-3 rounded-lg mt-4 shadow-lg"><strong>HAKİM KARARI:</strong> ${result.reasoning}</div>`;
+                
+                courtChat.innerHTML += `
+                    <div class="bg-amber-500/10 border border-amber-500/30 p-6 rounded-2xl mt-4 fade-in">
+                        <span class="block text-[10px] font-bold gold-text mb-2 uppercase tracking-[0.3em]">MAHKEME KARARI</span>
+                        <p class="serif-font italic text-lg text-slate-200 leading-relaxed">"${result.reasoning}"</p>
+                    </div>
+                `;
                 courtChat.scrollTop = courtChat.scrollHeight;
 
                 setTimeout(() => {
                     if (result.decision === "MAHKUM") {
                         document.getElementById('jailReason').innerText = result.reasoning;
-                        document.getElementById('jailScreen').style.display = 'flex';
+                        document.getElementById('jailScreen').classList.remove('hidden');
                     } else {
                         document.getElementById('winReason').innerText = result.reasoning;
-                        document.getElementById('winScreen').style.display = 'flex';
+                        document.getElementById('winScreen').classList.remove('hidden');
                     }
-                }, 3000);
-
-            } catch (error) {
-                console.error(error);
+                }, 5000);
+            } catch (e) {
                 btn.disabled = false;
-                btn.innerText = "KARARI BEKLE";
                 typing.classList.add('hidden');
-                alert("Karar verilirken bir hata oluştu. Lütfen tekrar deneyin.");
             }
         }
     </script>
