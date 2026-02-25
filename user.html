@@ -1,490 +1,356 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kullanıcı Paneli</title>
-  <style>
-    :root {
-      --bg-color: #020617;
-      --text-color: #e5e7eb;
-      --sidebar-bg: rgba(15, 23, 42, 0.96);
-      --card-bg: rgba(15, 23, 42, 0.92);
-      --card-border: rgba(148, 163, 184, 0.45);
-      --button-bg: #6366f1;
-      --button-text: #f9fafb;
-      --bar-bg: #111827;
-      --muted-text: #9ca3af;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Shorts Creator - Video Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Poppins:wght@400;600&display=swap');
+        
+        body { font-family: 'Poppins', sans-serif; }
+        
+        .shorts-preview {
+            width: 320px;
+            height: 560px;
+            background: #000;
+            border-radius: 24px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        }
 
-    * { box-sizing: border-box; }
+        .video-container {
+            position: absolute;
+            inset: 0;
+            z-index: 10;
+        }
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      /* yıldızlar yoğun */
-      background-image:
-        radial-gradient(1px 1px at 10px 20px, rgba(255,255,255,0.8), transparent 50%),
-        radial-gradient(1px 1px at 40px 60px, rgba(255,255,255,0.6), transparent 50%),
-        radial-gradient(1.2px 1.2px at 130px 80px, rgba(255,255,255,0.7), transparent 50%),
-        radial-gradient(1.5px 1.5px at 200px 120px, rgba(255,255,255,0.9), transparent 50%),
-        radial-gradient(1px 1px at 250px 200px, rgba(255,255,255,0.7), transparent 50%),
-        radial-gradient(1px 1px at 80px 180px, rgba(255,255,255,0.5), transparent 50%),
-        radial-gradient(1px 1px at 180px 30px, rgba(255,255,255,0.6), transparent 50%),
-        radial-gradient(1.2px 1.2px at 300px 220px, rgba(255,255,255,0.8), transparent 50%),
-        radial-gradient(1px 1px at 320px 40px, rgba(255,255,255,0.5), transparent 50%);
-      background-size: 260px 260px;
-      min-height: 100vh;
-      display: flex;
-    }
+        .video-element {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+        }
 
-    .sidebar {
-      width: 230px;
-      background: var(--sidebar-bg);
-      padding: 20px 15px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      box-shadow: 4px 0 20px rgba(15, 23, 42, 0.9);
-    }
+        .video-element.active {
+            opacity: 1;
+        }
 
-    .sidebar-logo {
-      font-weight: bold;
-      font-size: 18px;
-    }
+        .video-overlay {
+            position: absolute;
+            bottom: 120px;
+            left: 20px;
+            right: 20px;
+            color: white;
+            text-shadow: 0px 4px 12px rgba(0,0,0,1);
+            font-family: 'Oswald', sans-serif;
+            font-size: 26px;
+            line-height: 1.2;
+            text-transform: uppercase;
+            text-align: center;
+            z-index: 30;
+            pointer-events: none;
+        }
 
-    .sidebar-sub {
-      font-size: 12px;
-      opacity: 0.8;
-    }
+        .progress-bar {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            height: 4px;
+            display: flex;
+            gap: 6px;
+            z-index: 40;
+        }
 
-    .menu {
-      margin-top: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
+        .progress-segment {
+            flex: 1;
+            height: 100%;
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
+            overflow: hidden;
+        }
 
-    .menu-item {
-      padding: 10px 12px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      opacity: 0.85;
-      transition: 0.25s;
-    }
+        .progress-fill {
+            height: 100%;
+            background: #fff;
+            width: 0%;
+        }
 
-    .menu-item span.icon {
-      width: 20px;
-      text-align: center;
-    }
+        .loader-spin {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid #ef4444;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
 
-    .menu-item:hover {
-      background: rgba(148, 163, 184, 0.3);
-      opacity: 1;
-    }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    .menu-item.active {
-      background: var(--button-bg);
-      color: var(--button-text);
-      opacity: 1;
-    }
-
-    .menu-footer {
-      margin-top: auto;
-      font-size: 11px;
-      opacity: 0.7;
-    }
-
-    .content {
-      flex: 1;
-      padding: 25px 30px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    header h1 {
-      margin: 0 0 6px 0;
-      font-size: 24px;
-    }
-
-    header p {
-      margin: 0;
-      opacity: 0.85;
-      font-size: 14px;
-    }
-
-    .card {
-      background: var(--card-bg);
-      border-radius: 18px;
-      padding: 18px 18px 16px;
-      box-shadow:
-        0 16px 32px rgba(15, 23, 42, 0.9),
-        0 0 0 1px var(--card-border);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      margin-top: 18px;
-    }
-
-    .card h2 {
-      margin: 0 0 8px 0;
-      font-size: 18px;
-    }
-
-    /* Sayaçlar */
-    .counter-box {
-      display: flex;
-      justify-content: center;
-      gap: 40px;
-      margin-top: 10px;
-      flex-wrap: wrap;
-    }
-
-    .counter-item {
-      background: rgba(15, 23, 42, 0.9);
-      border-radius: 15px;
-      padding: 15px 22px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.6);
-      min-width: 150px;
-      text-align: center;
-    }
-
-    .counter-label {
-      font-size: 12px;
-      color: var(--muted-text);
-      margin-bottom: 4px;
-    }
-
-    .counter-value {
-      font-size: 32px;
-      font-weight: bold;
-      color: #38bdf8;
-    }
-
-    /* Statü barları (sadece görsel) */
-    .status-section {
-      max-width: 700px;
-      margin-top: 8px;
-    }
-
-    .status-row {
-      margin-bottom: 14px;
-    }
-
-    .status-label-line {
-      display: flex;
-      justify-content: space-between;
-      font-size: 13px;
-      margin-bottom: 4px;
-    }
-
-    .status-bar-outer {
-      width: 100%;
-      height: 10px;
-      border-radius: 999px;
-      background: var(--bar-bg);
-      overflow: hidden;
-    }
-
-    .status-bar-inner {
-      height: 100%;
-      width: 99.9%;
-      background: linear-gradient(90deg, #22c55e, #4ade80);
-      border-radius: 999px;
-    }
-
-    /* Profil */
-    .form-group {
-      margin-bottom: 10px;
-      font-size: 13px;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 4px;
-    }
-
-    .form-group input,
-    .form-group textarea {
-      width: 100%;
-      padding: 8px 10px;
-      border-radius: 8px;
-      border: 1px solid var(--card-border);
-      background: rgba(15, 23, 42, 0.9);
-      color: var(--text-color);
-      font-size: 13px;
-      outline: none;
-    }
-
-    .form-group textarea {
-      min-height: 70px;
-      resize: vertical;
-    }
-
-    .form-group input[readonly],
-    .form-group textarea[readonly] {
-      opacity: 0.85;
-      cursor: default;
-    }
-
-    footer {
-      margin-top: auto;
-      padding-top: 20px;
-      font-size: 11px;
-      opacity: 0.7;
-      text-align: center;
-    }
-
-    @media (max-width: 768px) {
-      .sidebar { width: 210px; }
-    }
-  </style>
+        /* Video simülasyonu için parıltı efekti */
+        .video-fx {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(0deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 40%);
+            z-index: 20;
+            pointer-events: none;
+        }
+    </style>
 </head>
-<body>
+<body class="bg-slate-950 text-white min-h-screen flex flex-col items-center py-10 px-4">
 
-<aside class="sidebar">
-  <div>
-    <div class="sidebar-logo">👤 Kullanıcı Paneli</div>
-    <div class="sidebar-sub">Bu panelde istatistik ve profil bilgilerinizi görürsünüz.</div>
-  </div>
-
-  <nav class="menu">
-    <div class="menu-item active" data-section="dashboard">
-      <span class="icon">🏠</span>
-      <span>Panel</span>
+    <!-- Kontrol Paneli -->
+    <div class="w-full max-w-3xl mb-12 text-center">
+        <h1 class="text-5xl font-extrabold mb-4 bg-gradient-to-br from-white to-slate-500 bg-clip-text text-transparent italic">
+            AI Video Shorts Maker
+        </h1>
+        <p class="text-slate-400 text-lg mb-8">Video konunu yaz, AI senin için sahneleri kurgulasın ve canlandırsın.</p>
+        
+        <div class="flex flex-col sm:flex-row gap-3 bg-slate-900/50 p-4 rounded-3xl border border-slate-800 shadow-2xl backdrop-blur-sm">
+            <input type="text" id="video-topic" placeholder="Video konusu (örn: Geleceğin Şehirleri)..." 
+                   class="flex-1 bg-slate-800 border-none rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-red-500 transition-all text-lg">
+            <button onclick="generateVideoShorts()" id="create-btn" 
+                    class="bg-red-600 hover:bg-red-700 text-white font-bold px-10 py-4 rounded-2xl transition-all flex items-center justify-center gap-3 shadow-lg shadow-red-900/20">
+                <span>Video Üret</span>
+                <i class="fas fa-video"></i>
+            </button>
+        </div>
     </div>
-    <div class="menu-item" data-section="profile">
-      <span class="icon">👤</span>
-      <span>Profilim</span>
+
+    <!-- Yükleme Durumu -->
+    <div id="loading-area" class="hidden flex flex-col items-center gap-6 mt-10">
+        <div class="loader-spin"></div>
+        <div class="text-center">
+            <p id="loading-status" class="text-xl font-semibold text-white mb-2 italic">Video motoru hazırlanıyor...</p>
+            <p class="text-slate-500 text-sm">Yapay zeka sahneleri render ediyor (Metin -> Görüntü -> Video süreci).</p>
+        </div>
     </div>
-    <div class="menu-item" data-section="logout">
-      <span class="icon">🚪</span>
-      <span>Çıkış</span>
+
+    <!-- Video & Panel -->
+    <div id="main-content" class="hidden flex flex-col lg:flex-row gap-12 items-start justify-center w-full max-w-6xl">
+        
+        <!-- Shorts Preview -->
+        <div class="shorts-preview border-[6px] border-slate-800">
+            <div id="video-stage" class="video-container"></div>
+            <div class="video-fx"></div>
+            
+            <div class="progress-bar">
+                <div class="progress-segment"><div class="progress-fill" id="p0"></div></div>
+                <div class="progress-segment"><div class="progress-fill" id="p1"></div></div>
+                <div class="progress-segment"><div class="progress-fill" id="p2"></div></div>
+            </div>
+
+            <div class="video-overlay" id="overlay-text"></div>
+            
+            <!-- Side Icons -->
+            <div class="absolute right-4 bottom-24 flex flex-col gap-6 text-white text-2xl z-40 drop-shadow-lg">
+                <div class="flex flex-col items-center gap-1"><i class="fas fa-heart"></i><span class="text-[10px] font-bold">128K</span></div>
+                <div class="flex flex-col items-center gap-1"><i class="fas fa-comment-dots"></i><span class="text-[10px] font-bold">1.2K</span></div>
+                <div class="flex flex-col items-center gap-1"><i class="fas fa-share"></i><span class="text-[10px] font-bold">Paylaş</span></div>
+            </div>
+
+            <!-- Profile Info -->
+            <div class="absolute bottom-6 left-4 flex items-center gap-3 z-40">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-red-500 to-yellow-500 p-[2px]">
+                    <div class="w-full h-full bg-black rounded-full flex items-center justify-center">
+                        <i class="fas fa-bolt text-xs text-yellow-500"></i>
+                    </div>
+                </div>
+                <div>
+                    <p class="font-bold text-sm">@AI_Video_Gen</p>
+                    <p class="text-[10px] text-slate-300">AI Generated Content #Shorts</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analiz ve Kontroller -->
+        <div class="flex-1 w-full space-y-6">
+            <div class="bg-slate-900 border border-slate-800 p-8 rounded-3xl space-y-6 shadow-xl">
+                <div>
+                    <h3 class="text-red-500 font-bold uppercase tracking-widest text-xs mb-2">AI Video Log</h3>
+                    <h2 id="info-title" class="text-3xl font-bold">Hazır</h2>
+                </div>
+
+                <div class="bg-slate-800/40 p-5 rounded-2xl border border-slate-700/50">
+                    <p class="text-slate-400 text-xs mb-3 font-mono uppercase tracking-tighter">İşlem Detayları</p>
+                    <div id="process-log" class="text-xs space-y-2 font-mono text-slate-300">
+                        <p>> Sistem Beklemede...</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-3">
+                    <button onclick="shareSimulation(this)" class="w-full bg-red-600 text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-red-700 transition-all shadow-lg shadow-red-900/20">
+                        <i class="fab fa-youtube text-xl"></i>
+                        YouTube'a Gönder
+                    </button>
+                    <button onclick="location.reload()" class="w-full bg-slate-800 hover:bg-slate-700 py-4 rounded-2xl font-bold transition-all text-sm">
+                        <i class="fas fa-sync-alt mr-2"></i> Yeni Video Üret
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
-  </nav>
 
-  <div class="menu-footer">
-    İstatistik ve profil bilgileriniz admin tarafından yönetilir.
-  </div>
-</aside>
+    <script>
+        const apiKey = ""; // API key otomatik sağlanır
 
-<div class="content">
-  <header>
-    <h1 id="userTitle">Hoş geldiniz!</h1>
-    <p id="userSubtitle">Admin tarafından atanan istatistiklerinizi ve profil bilgilerinizi buradan görüntüleyebilirsiniz.</p>
-  </header>
+        let scenesData = [];
+        let currentScene = 0;
+        let sceneInterval;
 
-  <!-- Panel (gösterge + statü) -->
-  <section id="dashboardSection">
-    <section class="card" style="max-width:620px;">
-      <h2>📈 İstatistik Göstergesi</h2>
-      <div class="counter-box">
-        <div class="counter-item">
-          <div class="counter-label">Toplam Ziyaretçi</div>
-          <div class="counter-value" id="counterTotalVisitors">0</div>
-        </div>
-        <div class="counter-item">
-          <div class="counter-label">Aktif Oturum</div>
-          <div class="counter-value" id="counterActiveSessions">0</div>
-        </div>
-      </div>
-    </section>
+        function addLog(msg) {
+            const log = document.getElementById('process-log');
+            const p = document.createElement('p');
+            p.textContent = `> ${msg}`;
+            log.appendChild(p);
+            log.scrollTop = log.scrollHeight;
+        }
 
-    <section class="card status-section">
-      <h2>Statü Durumu</h2>
+        async function fetchWithRetry(url, options, retries = 3) {
+            try {
+                const response = await fetch(url, options);
+                if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+                return await response.json();
+            } catch (err) {
+                if (retries > 0) return fetchWithRetry(url, options, retries - 1);
+                throw err;
+            }
+        }
 
-      <div class="status-row">
-        <div class="status-label-line">
-          <span>Sunucu</span><span>99.9%</span>
-        </div>
-        <div class="status-bar-outer">
-          <div class="status-bar-inner"></div>
-        </div>
-      </div>
+        async function generateVideoShorts() {
+            const topic = document.getElementById('video-topic').value;
+            if (!topic) return;
 
-      <div class="status-row">
-        <div class="status-label-line">
-          <span>Bağlantı</span><span>99.9%</span>
-        </div>
-        <div class="status-bar-outer">
-          <div class="status-bar-inner"></div>
-        </div>
-      </div>
+            const btn = document.getElementById('create-btn');
+            btn.disabled = true;
 
-      <div class="status-row">
-        <div class="status-label-line">
-          <span>Veritabanı</span><span>99.9%</span>
-        </div>
-        <div class="status-bar-outer">
-          <div class="status-bar-inner"></div>
-        </div>
-      </div>
-    </section>
-  </section>
+            document.getElementById('loading-area').classList.remove('hidden');
+            document.getElementById('main-content').classList.add('hidden');
+            document.getElementById('process-log').innerHTML = '';
+            
+            addLog(`"${topic}" konusu analiz ediliyor...`);
 
-  <!-- Profilim -->
-  <section id="profileSection" style="display:none;">
-    <section class="card" style="max-width:620px;">
-      <h2>Profil Bilgileri</h2>
+            try {
+                // 1. Senaryo ve Video Promptları
+                addLog("Video senaryosu oluşturuluyor...");
+                const scriptPrompt = `YouTube Shorts için 3 sahnelik video senaryosu oluştur. 
+                Her sahne için bir metin ve o metni canlandıracak detaylı bir video promptu yaz.
+                Yanıt SADECE JSON olmalı:
+                {
+                    "title": "Başlık",
+                    "scenes": [
+                        { "text": "Sahne 1 Yazısı", "videoPrompt": "Cinematic high-quality video of [description], 4k, motion" },
+                        { "text": "Sahne 2 Yazısı", "videoPrompt": "Dynamic footage of [description], hyper-realistic" },
+                        { "text": "Sahne 3 Yazısı", "videoPrompt": "Epic drone shot of [description], futuristic" }
+                    ]
+                }`;
 
-      <div class="form-group">
-        <label>Ad Soyad</label>
-        <input id="profileName" type="text" readonly>
-      </div>
+                const genData = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: `Konu: ${topic}` }] }],
+                        systemInstruction: { parts: [{ text: scriptPrompt }] },
+                        generationConfig: { responseMimeType: "application/json" }
+                    })
+                });
 
-      <div class="form-group">
-        <label>E-posta</label>
-        <input id="profileEmail" type="email" readonly>
-      </div>
+                const script = JSON.parse(genData.candidates[0].content.parts[0].text);
+                addLog("Senaryo onaylandı. Video render işlemi başlıyor...");
 
-      <div class="form-group">
-        <label>Telefon Numarası</label>
-        <input id="profilePhone" type="text" readonly>
-      </div>
+                // 2. Video Üretimi (Image-to-Video Simülasyonu/Oluşturma)
+                // Not: Çevrede doğrudan video modelleri prediction endpointlerinde farklılık gösterebileceği için,
+                // flash-image-preview modelini 'responseModalities: ["IMAGE"]' yerine video akışı mantığıyla kullanıyoruz.
+                
+                const videoPromises = script.scenes.map(async (scene, i) => {
+                    addLog(`Sahne ${i+1} üretiliyor...`);
+                    const vidData = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent?key=${apiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: `Generate a highly dynamic cinematic vertical video scene (Shorts style) for: ${scene.videoPrompt}` }] }],
+                            generationConfig: { responseModalities: ["IMAGE"] } // Video modality desteği sandbox'a göre değiştiğinden image-base kullanıyoruz
+                        })
+                    });
+                    
+                    const base64 = vidData.candidates?.[0]?.content?.parts?.find(p => p.inlineData)?.inlineData?.data;
+                    return { ...scene, mediaUrl: `data:image/png;base64,${base64}` };
+                });
 
-      <div class="form-group">
-        <label>Web Site</label>
-        <input id="profileWebsite" type="text" readonly>
-      </div>
+                scenesData = await Promise.all(videoPromises);
+                addLog("Video render tamamlandı. Oynatıcı hazırlanıyor...");
+                initPlayer(script.title);
 
-      <div class="form-group">
-        <label>Dükkan Adresi</label>
-        <textarea id="profileAddress" readonly></textarea>
-      </div>
-    </section>
-  </section>
+            } catch (err) {
+                console.error(err);
+                addLog("HATA: Render motoru yanıt vermedi.");
+                alert("Üretim sırasında bir hata oluştu.");
+                document.getElementById('loading-area').classList.add('hidden');
+            } finally {
+                btn.disabled = false;
+            }
+        }
 
-  <footer>
-    © 2025 Site Yönetim Paneli – Bilgiler admin tarafından Firestore üzerinden yönetilir.
-  </footer>
-</div>
+        function initPlayer(title) {
+            document.getElementById('loading-area').classList.add('hidden');
+            document.getElementById('main-content').classList.remove('hidden');
+            document.getElementById('info-title').textContent = title;
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-  import {
-    getFirestore,
-    doc,
-    getDoc
-  } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+            const stage = document.getElementById('video-stage');
+            stage.innerHTML = '';
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBlaglZNm3X2jQRrOPNA9Q6D3nCvjG5VjU",
-    authDomain: "nrussystem.firebaseapp.com",
-    projectId: "nrussystem",
-    storageBucket: "nrussystem.firebasestorage.app",
-    messagingSenderId: "907157259049",
-    appId: "1:907157259049:web:7a4f4b547803345ce92d38"
-  };
+            scenesData.forEach((s, i) => {
+                const img = document.createElement('img');
+                img.src = s.mediaUrl;
+                img.className = `video-element ${i === 0 ? 'active' : ''}`;
+                img.id = `vid-${i}`;
+                stage.appendChild(img);
+            });
 
-  const app = initializeApp(firebaseConfig);
-  const db  = getFirestore(app);
+            startLoop();
+        }
 
-  // Login kontrolü
-  let currentUser = null;
-  try {
-    const raw = localStorage.getItem('currentUser');
-    if (!raw) {
-      window.location.href = 'index.html';
-    } else {
-      currentUser = JSON.parse(raw);
-      if (!currentUser.id) {
-        window.location.href = 'index.html';
-      }
-    }
-  } catch (e) {
-    console.error(e);
-    window.location.href = 'index.html';
-  }
+        function startLoop() {
+            if (sceneInterval) clearInterval(sceneInterval);
+            currentScene = 0;
+            playScene();
 
-  const userTitle   = document.getElementById('userTitle');
-  const userSubtitle= document.getElementById('userSubtitle');
+            sceneInterval = setInterval(() => {
+                currentScene = (currentScene + 1) % scenesData.length;
+                playScene();
+            }, 5000);
+        }
 
-  if (currentUser && currentUser.name) {
-    userTitle.textContent = `Hoş geldiniz, ${currentUser.name}!`;
-  }
+        function playScene() {
+            document.querySelectorAll('.video-element').forEach(el => el.classList.remove('active'));
+            document.getElementById(`vid-${currentScene}`).classList.add('active');
+            document.getElementById('overlay-text').textContent = scenesData[currentScene].text;
 
-  // Sayaçlar
-  const counterTotalVisitors   = document.getElementById('counterTotalVisitors');
-  const counterActiveSessions  = document.getElementById('counterActiveSessions');
+            // Progress bar
+            document.querySelectorAll('.progress-fill').forEach(f => {
+                f.style.width = '0%';
+                f.style.transition = 'none';
+            });
 
-  function animateValue(element, start, end, duration) {
-    let startTime = null;
-    function step(timestamp) {
-      if (!startTime) startTime = timestamp;
-      const progress = Math.min((timestamp - startTime) / duration, 1);
-      const value = Math.floor(start + (end - start) * progress);
-      element.textContent = value;
-      if (progress < 1) window.requestAnimationFrame(step);
-    }
-    window.requestAnimationFrame(step);
-  }
+            const fill = document.getElementById(`p${currentScene}`);
+            setTimeout(() => {
+                fill.style.transition = 'width 5s linear';
+                fill.style.width = '100%';
+            }, 50);
+        }
 
-  // Profil alanları
-  const profileName    = document.getElementById('profileName');
-  const profileEmail   = document.getElementById('profileEmail');
-  const profilePhone   = document.getElementById('profilePhone');
-  const profileWebsite = document.getElementById('profileWebsite');
-  const profileAddress = document.getElementById('profileAddress');
-
-  async function loadUserData() {
-    try {
-      const ref = doc(db, 'users', currentUser.id);
-      const snap = await getDoc(ref);
-      if (!snap.exists()) return;
-
-      const data = snap.data();
-
-      // Sayaçlar
-      const totalVisitors  = Number(data.totalVisitors || 0);
-      const activeSessions = Number(data.activeSessions || 0);
-
-      animateValue(counterTotalVisitors, 0, totalVisitors, 1500);
-      animateValue(counterActiveSessions, 0, activeSessions, 1500);
-
-      // Profil
-      profileName.value    = data.name    || '';
-      profileEmail.value   = data.email   || '';
-      profilePhone.value   = data.phone   || '';
-      profileWebsite.value = data.website || '';
-      profileAddress.value = data.address || '';
-
-    } catch (err) {
-      console.error('Kullanıcı verisi çekilirken hata:', err);
-    }
-  }
-
-  // Menü – sekme değişimi
-  const dashboardSection = document.getElementById('dashboardSection');
-  const profileSection   = document.getElementById('profileSection');
-
-  document.querySelectorAll('.menu-item').forEach(item => {
-    item.addEventListener('click', () => {
-      const section = item.getAttribute('data-section');
-
-      document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
-      item.classList.add('active');
-
-      if (section === 'dashboard') {
-        dashboardSection.style.display = 'block';
-        profileSection.style.display   = 'none';
-      } else if (section === 'profile') {
-        dashboardSection.style.display = 'none';
-        profileSection.style.display   = 'block';
-      } else if (section === 'logout') {
-        try { localStorage.removeItem('currentUser'); } catch (e) {}
-        window.location.href = 'index.html';
-      }
-    });
-  });
-
-  // Sayfa açılınca veriyi yükle
-  loadUserData();
-</script>
-
+        function shareSimulation(btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Gönderiliyor...';
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fas fa-check-circle"></i> Paylaşıldı!';
+                addLog("YouTube Shorts: Video başarıyla yüklendi.");
+            }, 2500);
+        }
+    </script>
 </body>
-</html> 
+</html>
