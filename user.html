@@ -107,6 +107,9 @@
             font-size: 12px;
             display: none;
         }
+
+        .fade-in { animation: fadeIn 0.5s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="p-4 md:p-8">
@@ -247,8 +250,8 @@
     </main>
 
     <script>
-        // API Anahtarı entegre edildi
-        const apiKey = "AIzaSyCul_fbbgRymvdGGD9zf-CwH4sv1LYEl9Q"; 
+        // ÖNEMLİ: API anahtarı boş bırakılmalıdır, sistem çalışma anında sağlar.
+        const apiKey = ""; 
         let currentCase = null;
         let selectedDifficulty = "Orta";
         let viewMode = "detayli";
@@ -264,18 +267,24 @@
         }
 
         async function aiCall(prompt, systemInstruction, isJson = false) {
+            // Sadece bu model desteklenmektedir.
             const modelName = "gemini-2.5-flash-preview-09-2025";
             const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
             
             const payload = {
                 contents: [{ parts: [{ text: prompt }] }],
-                systemInstruction: { parts: [{ text: systemInstruction }] },
-                generationConfig: isJson ? { 
-                    responseMimeType: "application/json"
-                } : {}
+                systemInstruction: { parts: [{ text: systemInstruction }] }
             };
 
-            const maxRetries = 3;
+            if (isJson) {
+                payload.generationConfig = {
+                    responseMimeType: "application/json"
+                };
+            }
+
+            const maxRetries = 5;
+            let delay = 1000;
+
             for (let i = 0; i < maxRetries; i++) {
                 try {
                     const response = await fetch(url, { 
@@ -286,19 +295,20 @@
                     
                     if (!response.ok) {
                         const err = await response.json();
-                        throw new Error(err.error?.message || "Bağlantı hatası");
+                        throw new Error(err.error?.message || `HTTP ${response.status}`);
                     }
                     
                     const data = await response.json();
                     const textResult = data.candidates?.[0]?.content?.parts?.[0]?.text;
-                    if (!textResult) throw new Error("Boş yanıt");
+                    if (!textResult) throw new Error("API boş yanıt döndürdü.");
                     return textResult;
                 } catch (e) {
                     if (i === maxRetries - 1) {
-                        showErrorMessage("API Hatası: " + e.message);
+                        showErrorMessage("Bağlantı kurulamadı: " + e.message);
                         return null;
                     }
-                    await new Promise(r => setTimeout(r, 1000 * (i + 1)));
+                    await new Promise(r => setTimeout(r, delay));
+                    delay *= 2; // Üstel geri çekilme
                 }
             }
         }
@@ -321,10 +331,10 @@
             document.getElementById('loadingScreen').classList.remove('hidden');
             
             const system = `Sen profesyonel bir hukuk davası yazarı ve oyun motorusun. 
-            Zorluk: ${selectedDifficulty}. 
-            Aşağıdaki JSON formatında bir dava dosyası oluştur. Yanıtın sadece saf JSON olsun:
+            Zorluk: ${selectedDifficulty}. Dil: Türkçe.
+            Aşağıdaki JSON şemasına uygun bir dava kurgula:
             { 
-                "title": "Vaka Başlığı", 
+                "title": "Dava Başlığı", 
                 "desc": "Olayın hukuki özeti", 
                 "client": "Müvekkil İsim", 
                 "secret": "Müvekkilin sakladığı kritik suç/gerçek", 
@@ -344,7 +354,8 @@
                     renderGame();
                     document.getElementById('gameUI').classList.remove('opacity-0');
                 } catch (e) {
-                    showErrorMessage("Veri işleme hatası.");
+                    showErrorMessage("JSON ayrıştırma hatası.");
+                    console.error(e);
                 }
             }
             document.getElementById('loadingScreen').classList.add('hidden');
@@ -423,7 +434,7 @@
             area.innerHTML += `<div class="text-right mb-3"><div class="inline-block bg-[#d4af37]/10 border border-[#d4af37]/20 px-3 py-2 rounded-xl text-slate-300">Avukat: ${val}</div></div>`;
             input.value = "";
 
-            const sys = activeTab === 'client' ? `Müvekkilsin. Adın: ${currentCase.client}. Gizli gerçeğin: ${currentCase.secret}. Avukatına karşı savunmacısın ve bu gerçeği direkt söylemezsin.` : `Tanıksın. Adın: ${currentCase.witness}. Rolün: ${currentCase.witnessRole}. Sorulara soğukkanlı cevap ver ama stresliysen açık ver.`;
+            const sys = activeTab === 'client' ? `Müvekkilsin (${currentCase.client}). Gizli gerçeğin: ${currentCase.secret}. Avukatına karşı savunmacısın ve bu gerçeği direkt söylemezsin.` : `Tanıksın (${currentCase.witness}). Rolün: ${currentCase.witnessRole}. Sorulara soğukkanlı cevap ver ama stresliysen açık ver.`;
             const res = await aiCall(val, sys);
             
             if (res) {
@@ -469,8 +480,9 @@
             document.getElementById('submitDefense').disabled = true;
             document.getElementById('typingIndicator').classList.remove('hidden');
             
-            const sys = `Sen Mahkeme Heyetisin. Savunma dilekçesini ve davadaki gizli gerçekleri (Müvekkil sırrı: ${currentCase.secret}) değerlendirip nihai bir hüküm ver. Yanıtın saf JSON formatında olsun.
-            JSON Formatı: { "decision": "BERAAT" veya "MAHKUMİYET", "reason": "Kısa ve etkileyici hukuki gerekçe" }`;
+            const sys = `Sen Mahkeme Heyetisin. Savunma dilekçesini ve davadaki gizli gerçekleri (Müvekkil sırrı: ${currentCase.secret}) değerlendirip nihai bir hüküm ver. 
+            Yanıtın sadece saf JSON formatında olsun:
+            { "decision": "BERAAT" veya "MAHKUMİYET", "reason": "Hukuki gerekçe" }`;
             
             const res = await aiCall(`Avukatın Nihai Savunması: ${def}`, sys, true);
             
@@ -482,7 +494,7 @@
                     document.getElementById('resultTitle').style.color = result.decision === "BERAAT" ? "#22c55e" : "#ef4444";
                     document.getElementById('resultScreen').classList.remove('hidden');
                 } catch (e) {
-                    showErrorMessage("Karar analiz hatası.");
+                    showErrorMessage("Karar analizi sırasında hata oluştu.");
                 }
             }
             document.getElementById('submitDefense').disabled = false;
