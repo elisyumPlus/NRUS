@@ -93,9 +93,25 @@
             50% { box-shadow: 0 0 20px rgba(220, 38, 38, 0.4); }
         }
         .pulse-danger { animation: pulse-red 2s infinite; }
+
+        .error-toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #dc2626;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            z-index: 1000;
+            font-size: 12px;
+            display: none;
+        }
     </style>
 </head>
 <body class="p-4 md:p-8">
+
+    <div id="errorToast" class="error-toast"></div>
 
     <div class="max-w-7xl mx-auto mb-8">
         <div class="motto-bar py-3 text-center">
@@ -238,13 +254,63 @@
     </main>
 
     <script>
-        const apiKey = "AIzaSyCIG1u3wJNlp81Jt4Rp_HuSH26iEwb-2GI";
+        // API anahtarı Canvas ortamında boş bırakılmalıdır
+        const apiKey = ""; 
         let currentCase = null;
         let selectedDifficulty = "Orta";
         let viewMode = "detayli";
         let activeTab = "client";
         let clientStress = 10;
         let objectionMenuOpen = false;
+
+        function showErrorMessage(msg) {
+            const toast = document.getElementById('errorToast');
+            toast.innerText = msg;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 5000);
+        }
+
+        async function aiCall(prompt, systemInstruction, isJson = false) {
+            // Model ismi ve API versiyonu doğrulanmış formatta olmalı
+            const modelName = "gemini-2.5-flash-preview-09-2025";
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+            
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }],
+                systemInstruction: { parts: [{ text: systemInstruction }] },
+                generationConfig: isJson ? { 
+                    responseMimeType: "application/json"
+                } : {}
+            };
+
+            const maxRetries = 5;
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(url, { 
+                        method: 'POST', 
+                        headers: { 'Content-Type': 'application/json' }, 
+                        body: JSON.stringify(payload) 
+                    });
+                    
+                    if (!response.ok) {
+                        const errBody = await response.json();
+                        throw new Error(`API Hatası ${response.status}: ${errBody.error?.message || 'Bilinmeyen Hata'}`);
+                    }
+                    
+                    const data = await response.json();
+                    const textResult = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (!textResult) throw new Error("Yapay zekadan boş yanıt geldi");
+                    return textResult;
+                } catch (e) {
+                    if (i === maxRetries - 1) {
+                        showErrorMessage("Bağlantı Hatası: " + e.message);
+                        return null;
+                    }
+                    // Üstel geri çekilme (Exponential backoff)
+                    await new Promise(r => setTimeout(r, Math.pow(2, i) * 1000));
+                }
+            }
+        }
 
         function setViewMode(mode) {
             viewMode = mode;
@@ -259,26 +325,14 @@
             });
         }
 
-        async function aiCall(prompt, systemInstruction, isJson = false) {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-            const payload = {
-                contents: [{ parts: [{ text: prompt }] }],
-                systemInstruction: { parts: [{ text: systemInstruction }] },
-                generationConfig: isJson ? { responseMimeType: "application/json" } : {}
-            };
-            try {
-                const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                const data = await response.json();
-                return data.candidates?.[0]?.content?.parts?.[0]?.text;
-            } catch (e) { return null; }
-        }
-
         async function startGame() {
             document.getElementById('setupScreen').classList.add('hidden');
             document.getElementById('loadingScreen').classList.remove('hidden');
             
-            const system = `Detaylı bir hukuk davası kurgula. Zorluk: ${selectedDifficulty}. 
-            JSON dön: { 
+            const system = `Sen profesyonel bir hukuk davası yazarı ve oyun motorusun. 
+            Zorluk: ${selectedDifficulty}. 
+            Aşağıdaki JSON formatında bir dava dosyası oluştur:
+            { 
                 "title": "Vaka Başlığı", 
                 "desc": "Olayın hukuki özeti", 
                 "client": "Müvekkil İsim", 
@@ -291,14 +345,18 @@
                 "evidence": [{"name": "Delil Adı", "desc": "Hukuki önemi"}] 
             }`;
             
-            const res = await aiCall("Yeni dava oluştur.", system, true);
+            const res = await aiCall("Yeni bir hukuk davası kurgula.", system, true);
             if (res) {
-                currentCase = JSON.parse(res);
-                applyLayout();
-                renderGame();
+                try {
+                    currentCase = JSON.parse(res);
+                    applyLayout();
+                    renderGame();
+                    document.getElementById('gameUI').classList.remove('opacity-0');
+                } catch (e) {
+                    showErrorMessage("Dava dosyası işlenirken hata oluştu.");
+                }
             }
             document.getElementById('loadingScreen').classList.add('hidden');
-            document.getElementById('gameUI').classList.remove('opacity-0');
         }
 
         function applyLayout() {
@@ -374,7 +432,7 @@
             area.innerHTML += `<div class="text-right mb-3"><div class="inline-block bg-[#d4af37]/10 border border-[#d4af37]/20 px-3 py-2 rounded-xl text-slate-300">Avukat: ${val}</div></div>`;
             input.value = "";
 
-            const sys = activeTab === 'client' ? `Müvekkilsin. Gizli gerçeğin: ${currentCase.secret}. Avukatına karşı savunmacısın.` : `Tanıksın. Rolün: ${currentCase.witnessRole}. Sorulara soğukkanlı cevap ver.`;
+            const sys = activeTab === 'client' ? `Müvekkilsin. Adın: ${currentCase.client}. Gizli gerçeğin: ${currentCase.secret}. Avukatına karşı savunmacısın ve bu gerçeği direkt söylemezsin.` : `Tanıksın. Adın: ${currentCase.witness}. Rolün: ${currentCase.witnessRole}. Sorulara soğukkanlı cevap ver ama stresliysen açık ver.`;
             const res = await aiCall(val, sys);
             
             if (res) {
@@ -420,17 +478,24 @@
             document.getElementById('submitDefense').disabled = true;
             document.getElementById('typingIndicator').classList.remove('hidden');
             
-            const sys = `Mahkeme Heyetisin. Beraat veya Mahkumiyet kararı ver. 
-            JSON: { "decision": "BERAAT" veya "MAHKUMİYET", "reason": "Hukuki gerekçe" }`;
-            const res = await aiCall(def, sys, true);
+            const sys = `Sen Mahkeme Heyetisin. Savunma dilekçesini ve davadaki gizli gerçekleri (Müvekkil sırrı: ${currentCase.secret}) değerlendirip nihai bir hüküm ver.
+            JSON Formatı: { "decision": "BERAAT" veya "MAHKUMİYET", "reason": "Kısa ve etkileyici hukuki gerekçe" }`;
+            
+            const res = await aiCall(`Avukatın Nihai Savunması: ${def}`, sys, true);
             
             if (res) {
-                const result = JSON.parse(res);
-                document.getElementById('resultTitle').innerText = result.decision;
-                document.getElementById('resultReason').innerText = result.reason;
-                document.getElementById('resultTitle').style.color = result.decision === "BERAAT" ? "#22c55e" : "#ef4444";
-                document.getElementById('resultScreen').classList.remove('hidden');
+                try {
+                    const result = JSON.parse(res);
+                    document.getElementById('resultTitle').innerText = result.decision;
+                    document.getElementById('resultReason').innerText = result.reason;
+                    document.getElementById('resultTitle').style.color = result.decision === "BERAAT" ? "#22c55e" : "#ef4444";
+                    document.getElementById('resultScreen').classList.remove('hidden');
+                } catch (e) {
+                    showErrorMessage("Hüküm belgesi analiz edilemedi.");
+                }
             }
+            document.getElementById('submitDefense').disabled = false;
+            document.getElementById('typingIndicator').classList.add('hidden');
         }
     </script>
 </body>
