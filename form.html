@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siyah Temalı Başvuru Formu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            500: '#00f0ff',
+                            600: '#00d8e6',
+                            700: '#00b4c2',
+                            900: '#004f56',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #050505;
+            color: #e4e4e7;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Square grid background pattern */
+        .bg-grid {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+        }
+
+        /* Particle Canvas setup */
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Custom backdrop blur glass effect */
+        .glass-card {
+            background: rgba(18, 18, 22, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        /* Marquee ticker animation */
+        @keyframes marquee {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .animate-marquee {
+            display: flex;
+            width: 200%;
+            animation: marquee 25s linear infinite;
+        }
+
+        .animate-marquee:hover {
+            animation-play-state: paused;
+        }
+
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #09090b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #27272a;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3f3f46;
+        }
+    </style>
+</head>
+<body class="relative min-h-screen flex flex-col justify-between bg-grid antialiased selection:bg-white selection:text-black">
+
+    <!-- Background Animated Particles Canvas -->
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- Content Container -->
+    <div class="relative z-10 flex-grow flex flex-col">
+        
+        <!-- Header Section -->
+        <header class="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-lg shadow-white/10">
+                    <i class="fa-solid fa-paper-plane text-black text-lg"></i>
+                </div>
+                <span class="text-xl font-bold tracking-wider text-white">NRUS<span class="text-zinc-400">FORM</span></span>
+            </div>
+
+            <!-- Header Right: Language Switcher -->
+            <div class="flex items-center space-x-3 sm:space-x-4">
+                <!-- Language Selector -->
+                <div class="relative inline-flex bg-zinc-900/90 border border-zinc-800 p-1 rounded-xl shadow-inner">
+                    <button id="langTR" onclick="setLanguage('tr')" class="px-3 py-1 text-xs font-semibold rounded-lg transition-all bg-white text-black shadow-md">
+                        TR
+                    </button>
+                    <button id="langEN" onclick="setLanguage('en')" class="px-3 py-1 text-xs font-semibold rounded-lg transition-all text-zinc-400 hover:text-white">
+                        EN
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Application Card Section -->
+        <main class="w-full max-w-4xl mx-auto px-4 sm:px-6 my-auto py-8">
+            <div class="glass-card rounded-3xl p-6 sm:p-10 md:p-12 transition-all">
+                
+                <!-- Card Header Title -->
+                <div class="text-center mb-8">
+                    <h1 id="formTitle" class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight mb-2">
+                        Aday Başvuru Formu
+                    </h1>
+                    <p id="formSubtitle" class="text-zinc-400 text-sm sm:text-base max-w-lg mx-auto">
+                        Geleceğin projelerinde yer almak için bilgilerinizi adımları takip ederek doldurun.
+                    </p>
+                </div>
+
+                <!-- Stepper Progress Steps Bar -->
+                <div class="mb-10">
+                    <div class="flex items-center justify-between max-w-xl mx-auto relative">
+                        <!-- Connecting Line Background -->
+                        <div class="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-zinc-800 rounded-full z-0"></div>
+                        <!-- Active Progress Line -->
+                        <div id="stepProgressLine" class="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-white rounded-full z-0 transition-all duration-500" style="width: 0%;"></div>
+
+                        <!-- Step 1 Circle -->
+                        <div class="relative z-10 flex flex-col items-center">
+                            <div id="stepCircle1" class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-white text-black font-bold flex items-center justify-center shadow-lg shadow-white/20 transition-all">
+                                1
+                            </div>
+                            <span id="stepLabel1" class="text-xs font-medium mt-2 text-white">Kişisel</span>
+                        </div>
+
+                        <!-- Step 2 Circle -->
+                        <div class="relative z-10 flex flex-col items-center">
+                            <div id="stepCircle2" class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-zinc-800 text-zinc-400 font-bold flex items-center justify-center border border-zinc-700 transition-all">
+                                2
+                            </div>
+                            <span id="stepLabel2" class="text-xs font-medium mt-2 text-zinc-500">İletişim</span>
+                        </div>
+
+                        <!-- Step 3 Circle -->
+                        <div class="relative z-10 flex flex-col items-center">
+                            <div id="stepCircle3" class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-zinc-800 text-zinc-400 font-bold flex items-center justify-center border border-zinc-700 transition-all">
+                                3
+                            </div>
+                            <span id="stepLabel3" class="text-xs font-medium mt-2 text-zinc-500">Özet & Onay</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Body -->
+                <form id="applicationForm" onsubmit="handleFormSubmit(event)">
+                    
+                    <!-- STEP 1: Kişisel Bilgiler -->
+                    <div id="stepContent1" class="space-y-6 animate-fadeIn">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Ad Soyad Input -->
+                            <div class="space-y-2">
+                                <label for="fullName" class="block text-sm font-medium text-zinc-300">
+                                    <i class="fa-regular fa-user text-white mr-2"></i><span id="lblFullName">Ad Soyad</span> <span class="text-white">*</span>
+                                </label>
+                                <input type="text" id="fullName" required placeholder="Ahmet Yılmaz" 
+                                    class="w-full bg-zinc-900/80 border border-zinc-800 rounded-xl px-4 py-3.5 text-white placeholder-zinc-600 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all">
+                            </div>
+
+                            <!-- Yaşadığı Şehir Input -->
+                            <div class="space-y-2">
+                                <label for="city" class="block text-sm font-medium text-zinc-300">
+                                    <i class="fa-solid fa-location-dot text-white mr-2"></i><span id="lblCity">Yaşadığı Şehir</span> <span class="text-white">*</span>
+                                </label>
+                                <input type="text" id="city" required placeholder="Örn: İstanbul" 
+                                    class="w-full bg-zinc-900/80 border border-zinc-800 rounded-xl px-4 py-3.5 text-white placeholder-zinc-600 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 2: İletişim Bilgileri -->
+                    <div id="stepContent2" class="space-y-6 hidden animate-fadeIn">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Telefon Numarası Input -->
+                            <div class="space-y-2">
+                                <label for="phone" class="block text-sm font-medium text-zinc-300">
+                                    <i class="fa-solid fa-phone text-white mr-2"></i><span id="lblPhone">Telefon Numarası</span> <span class="text-white">*</span>
+                                </label>
+                                <input type="tel" id="phone" required placeholder="+90 5XX XXX XX XX" 
+                                    class="w-full bg-zinc-900/80 border border-zinc-800 rounded-xl px-4 py-3.5 text-white placeholder-zinc-600 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all">
+                            </div>
+
+                            <!-- E-Posta Adresi Input -->
+                            <div class="space-y-2">
+                                <label for="email" class="block text-sm font-medium text-zinc-300">
+                                    <i class="fa-regular fa-envelope text-white mr-2"></i><span id="lblEmail">E-posta Adresi</span> <span class="text-white">*</span>
+                                </label>
+                                <input type="email" id="email" required placeholder="ornek@domain.com" 
+                                    class="w-full bg-zinc-900/80 border border-zinc-800 rounded-xl px-4 py-3.5 text-white placeholder-zinc-600 focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3: Özet ve Onay -->
+                    <div id="stepContent3" class="space-y-6 hidden animate-fadeIn">
+                        <!-- Data Summary Box -->
+                        <div class="bg-zinc-900/90 border border-zinc-800 rounded-2xl p-5 space-y-3">
+                            <h3 id="lblSummaryTitle" class="text-sm font-semibold text-white uppercase tracking-wider mb-2">Başvuru Özeti</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                                <div><span class="text-zinc-500" id="sumLblName">Ad Soyad:</span> <span id="summaryName" class="font-medium text-white"></span></div>
+                                <div><span class="text-zinc-500" id="sumLblCity">Şehir:</span> <span id="summaryCity" class="font-medium text-white"></span></div>
+                                <div><span class="text-zinc-500" id="sumLblPhone">Telefon:</span> <span id="summaryPhone" class="font-medium text-white"></span></div>
+                                <div><span class="text-zinc-500" id="sumLblEmail">E-posta:</span> <span id="summaryEmail" class="font-medium text-white"></span></div>
+                            </div>
+                        </div>
+
+                        <!-- Terms Checkbox -->
+                        <div class="flex items-start space-x-3 pt-2">
+                            <input type="checkbox" id="terms" required class="mt-1 w-4 h-4 accent-white rounded cursor-pointer bg-zinc-900 border-zinc-700">
+                            <label for="terms" id="lblTerms" class="text-xs sm:text-sm text-zinc-400 cursor-pointer">
+                                Kişisel verilerimin işlenmesini ve tarafımla iletişime geçilmesini kabul ediyorum.
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Buttons Container -->
+                    <div class="flex items-center justify-between pt-8 border-t border-zinc-800/80 mt-8">
+                        <button type="button" id="btnPrev" onclick="prevStep()" class="hidden px-6 py-3 rounded-xl border border-zinc-700 text-zinc-300 font-semibold hover:bg-zinc-800 hover:text-white transition-all">
+                            <i class="fa-solid fa-arrow-left mr-2"></i><span id="btnPrevText">Geri</span>
+                        </button>
+                        
+                        <!-- Empty spacer for step 1 when Prev button is hidden -->
+                        <div id="btnPrevSpacer" class="block"></div>
+
+                        <button type="button" id="btnNext" onclick="nextStep()" class="px-8 py-3 rounded-xl bg-white text-black font-bold hover:bg-zinc-200 shadow-lg shadow-white/10 transition-all">
+                            <span id="btnNextText">Devam Et</span><i class="fa-solid fa-arrow-right ml-2"></i>
+                        </button>
+
+                        <button type="submit" id="btnSubmit" class="hidden px-8 py-3 rounded-xl bg-gradient-to-r from-white to-zinc-300 text-black font-bold hover:from-zinc-100 hover:to-zinc-200 shadow-lg shadow-white/20 transition-all">
+                            <i class="fa-solid fa-paper-plane mr-2"></i><span id="btnSubmitText">Başvuruyu Gönder</span>
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </main>
+
+        <!-- Bottom Companies Ticker (Marquee) -->
+        <footer class="w-full bg-zinc-950/80 border-t border-zinc-900 py-6 overflow-hidden mt-auto">
+            <div class="max-w-6xl mx-auto px-4 mb-3 text-center">
+                <p id="marqueeTitle" class="text-xs font-semibold text-zinc-500 tracking-widest uppercase">Çalıştığımız & İş Ortaklığı Yaptığımız Firmalar</p>
+            </div>
+            
+            <div class="relative w-full overflow-hidden flex items-center">
+                <!-- Fade Edges -->
+                <div class="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-[#050505] to-transparent z-10 pointer-events-none"></div>
+                <div class="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-[#050505] to-transparent z-10 pointer-events-none"></div>
+
+                <!-- Sliding Content -->
+                <div class="animate-marquee whitespace-nowrap flex items-center space-x-12 sm:space-x-16 text-zinc-300 font-bold text-lg sm:text-xl tracking-wider">
+                    <span class="flex items-center space-x-2"><i class="fa-solid fa-globe text-white"></i> <span>TOR MEDIA</span></span>
+                    <span class="flex items-center space-x-2"><i class="fa-solid fa-shield-halved text-emerald-400"></i> <span>NRUS AUTH</span></span>
+                    <span class="flex items-center space-x-2"><i class="fa-solid fa-code text-purple-400"></i> <span>APITOTR</span></span>
+                    <span class="flex items-center space-x-2"><i class="fa-solid fa-eye text-zinc-300"></i> <span>VISION GATE</span></span>
+                    <span class="flex items-center space-x-2"><i class="fa-solid fa-cube text-amber-400"></i> <span>BEE ITEM</span></span>
+                    <span class="flex items-center space-x-2"><i class="fa-brands fa-discord text-indigo-400"></i> <span>DISCORD HABER</span></span>
+                    <span class="flex items-center space-x-2"><i class="fa-solid fa-network-wired text-rose-400"></i> <span>FORM API</span></span>
+                    
+                    <!-- Repeated for continuous loop -->
+                    <span class="flex items-center space-x-2"><i class="fa-solid fa-globe text-white"></i> <span>TOR MEDIA</span></span>
+                    <span class="flex items-center space-x-2"><i class="fa-solid fa-shield-halved text-emerald-400"></i> <span>NRUS AUTH</span></span>
+                    <span class="flex items-center space-x-2"><i class="fa-solid fa-code text-purple-400"></i> <span>APITOTR</span></span>
+                    <span class="flex items-center space-x-2"><i class="fa-solid fa-eye text-zinc-300"></i> <span>VISION GATE</span></span>
+                    <span class="flex items-center space-x-2"><i class="fa-solid fa-cube text-amber-400"></i> <span>BEE ITEM</span></span>
+                    <span class="flex items-center space-x-2"><i class="fa-brands fa-discord text-indigo-400"></i> <span>DISCORD HABER</span></span>
+                    <span class="flex items-center space-x-2"><i class="fa-solid fa-network-wired text-rose-400"></i> <span>FORM API</span></span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Custom Modal / Notification Box (Replaces alert()) -->
+    <div id="customModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
+        <div class="glass-card max-w-sm w-full mx-4 rounded-3xl p-6 text-center shadow-2xl border border-zinc-700">
+            <div id="modalIconContainer" class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl">
+                <i id="modalIcon" class="fa-solid fa-check"></i>
+            </div>
+            <h3 id="modalTitle" class="text-xl font-bold text-white mb-2"></h3>
+            <p id="modalMessage" class="text-zinc-400 text-sm mb-6"></p>
+            <button onclick="closeModal()" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-semibold rounded-xl transition-all">
+                Tamam
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- TELEGRAM BOT KONFİGÜRASYONU ---
+        let TELEGRAM_BOT_TOKEN = "8808292217:AAGayWBFVZQhVh6GM6Q4U9RzP0HL-766cr4";
+        let TELEGRAM_CHAT_ID = "1812453330";
+
+        // Application State
+        let currentStep = 1;
+        let currentLang = 'tr';
+
+        const i18n = {
+            tr: {
+                title: "Aday Başvuru Formu",
+                subtitle: "Geleceğin projelerinde yer almak için bilgilerinizi adımları takip ederek doldurulun.",
+                step1: "Kişisel",
+                step2: "İletişim",
+                step3: "Özet & Onay",
+                fullName: "Ad Soyad",
+                city: "Yaşadığı Şehir",
+                cityPlaceholder: "Örn: İstanbul",
+                phone: "Telefon Numarası",
+                email: "E-posta Adresi",
+                summaryTitle: "Başvuru Özeti",
+                sumName: "Ad Soyad:",
+                sumCity: "Şehir:",
+                sumPhone: "Telefon:",
+                sumEmail: "E-posta:",
+                terms: "Kişisel verilerimin işlenmesini ve tarafımla iletişime geçilmesini kabul ediyorum.",
+                btnPrev: "Geri",
+                btnNext: "Devam Et",
+                btnSubmit: "Başvuruyu Gönder",
+                marqueeTitle: "Çalıştığımız & İş Ortaklığı Yaptığımız Firmalar",
+                errorFill: "Lütfen tüm zorunlu alanları eksiksiz doldurunuz.",
+                successTitle: "Başvuru Alındı!",
+                successMsg: "Başvurunuz başarıyla kaydedildi ve Telegram üzerinden yetkililere iletildi.",
+                errorTgTitle: "Gönderim Hatası!",
+                errorTgMsg: "Telegram bot bilgileri doğrulanamadı. Lütfen Bot Token ve Chat ID değerlerinizi kontrol edin."
+            },
+            en: {
+                title: "Candidate Application",
+                subtitle: "Follow the steps to submit your information and join our future projects.",
+                step1: "Personal",
+                step2: "Contact",
+                step3: "Summary",
+                fullName: "Full Name",
+                city: "Current City",
+                cityPlaceholder: "e.g. London",
+                phone: "Phone Number",
+                email: "Email Address",
+                summaryTitle: "Application Summary",
+                sumName: "Full Name:",
+                sumCity: "City:",
+                sumPhone: "Phone:",
+                sumEmail: "Email:",
+                terms: "I consent to the processing of my personal data and being contacted.",
+                btnPrev: "Back",
+                btnNext: "Continue",
+                btnSubmit: "Submit Application",
+                marqueeTitle: "Companies We Work & Partner With",
+                errorFill: "Please fill in all required fields completely.",
+                successTitle: "Application Received!",
+                successMsg: "Your application has been saved and forwarded via Telegram.",
+                errorTgTitle: "Submission Error!",
+                errorTgMsg: "Could not send via Telegram. Please check your Bot Token and Chat ID settings."
+            }
+        };
+
+        function updateStepUI() {
+            // Update step line progress width
+            const progress = ((currentStep - 1) / 2) * 100;
+            document.getElementById('stepProgressLine').style.width = `${progress}%`;
+
+            // Hide all step contents
+            document.getElementById('stepContent1').classList.add('hidden');
+            document.getElementById('stepContent2').classList.add('hidden');
+            document.getElementById('stepContent3').classList.add('hidden');
+
+            // Show current step content
+            document.getElementById(`stepContent${currentStep}`).classList.remove('hidden');
+
+            // Update circles appearance
+            for (let i = 1; i <= 3; i++) {
+                const circle = document.getElementById(`stepCircle${i}`);
+                const label = document.getElementById(`stepLabel${i}`);
+
+                if (i <= currentStep) {
+                    circle.className = "w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-white text-black font-bold flex items-center justify-center shadow-lg shadow-white/20 transition-all";
+                    label.className = "text-xs font-medium mt-2 text-white";
+                } else {
+                    circle.className = "w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-zinc-800 text-zinc-400 font-bold flex items-center justify-center border border-zinc-700 transition-all";
+                    label.className = "text-xs font-medium mt-2 text-zinc-500";
+                }
+            }
+
+            // Button Visibilities
+            const btnPrev = document.getElementById('btnPrev');
+            const btnPrevSpacer = document.getElementById('btnPrevSpacer');
+            const btnNext = document.getElementById('btnNext');
+            const btnSubmit = document.getElementById('btnSubmit');
+
+            if (currentStep === 1) {
+                btnPrev.classList.add('hidden');
+                btnPrevSpacer.classList.remove('hidden');
+                btnNext.classList.remove('hidden');
+                btnSubmit.classList.add('hidden');
+            } else if (currentStep === 2) {
+                btnPrev.classList.remove('hidden');
+                btnPrevSpacer.classList.add('hidden');
+                btnNext.classList.remove('hidden');
+                btnSubmit.classList.add('hidden');
+            } else if (currentStep === 3) {
+                btnPrev.classList.remove('hidden');
+                btnPrevSpacer.classList.add('hidden');
+                btnNext.classList.add('hidden');
+                btnSubmit.classList.remove('hidden');
+
+                // Populate Summary
+                document.getElementById('summaryName').textContent = document.getElementById('fullName').value || '-';
+                document.getElementById('summaryCity').textContent = document.getElementById('city').value || '-';
+                document.getElementById('summaryPhone').textContent = document.getElementById('phone').value || '-';
+                document.getElementById('summaryEmail').textContent = document.getElementById('email').value || '-';
+            }
+        }
+
+        function nextStep() {
+            if (currentStep === 1) {
+                const name = document.getElementById('fullName').value.trim();
+                const city = document.getElementById('city').value.trim();
+                if (!name || !city) {
+                    showModal('Eksik Bilgi', i18n[currentLang].errorFill, 'error');
+                    return;
+                }
+            } else if (currentStep === 2) {
+                const phone = document.getElementById('phone').value.trim();
+                const email = document.getElementById('email').value.trim();
+                if (!phone || !email) {
+                    showModal('Eksik Bilgi', i18n[currentLang].errorFill, 'error');
+                    return;
+                }
+            }
+
+            if (currentStep < 3) {
+                currentStep++;
+                updateStepUI();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateStepUI();
+            }
+        }
+
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+
+            const fullName = document.getElementById('fullName').value.trim();
+            const city = document.getElementById('city').value;
+            const phone = document.getElementById('phone').value.trim();
+            const email = document.getElementById('email').value.trim();
+
+            const message = `🚀 <b>YENİ BAŞVURU ALINDI</b>\n\n` +
+                `👤 <b>Ad Soyad:</b> ${fullName}\n` +
+                `📍 <b>Şehir:</b> ${city}\n` +
+                `📞 <b>Telefon:</b> ${phone}\n` +
+                `✉️ <b>E-posta:</b> ${email}\n` +
+                `📅 <b>Tarih:</b> ${new Date().toLocaleString('tr-TR')}`;
+
+            try {
+                const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHAT_ID,
+                        text: message,
+                        parse_mode: 'HTML'
+                    })
+                });
+
+                const resData = await response.json();
+
+                if (resData.ok) {
+                    showModal(i18n[currentLang].successTitle, i18n[currentLang].successMsg, 'success');
+                    document.getElementById('applicationForm').reset();
+                    currentStep = 1;
+                    updateStepUI();
+                } else {
+                    showModal(i18n[currentLang].errorTgTitle, i18n[currentLang].errorTgMsg, 'error');
+                }
+            } catch (err) {
+                showModal(i18n[currentLang].errorTgTitle, i18n[currentLang].errorTgMsg, 'error');
+            }
+        }
+
+        function showModal(title, message, type = 'success') {
+            const modal = document.getElementById('customModal');
+            const iconContainer = document.getElementById('modalIconContainer');
+            const icon = document.getElementById('modalIcon');
+
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalMessage').textContent = message;
+
+            if (type === 'success') {
+                iconContainer.className = "w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+                icon.className = "fa-solid fa-check";
+            } else {
+                iconContainer.className = "w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl bg-rose-500/10 text-rose-400 border border-rose-500/20";
+                icon.className = "fa-solid fa-exclamation";
+            }
+
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('customModal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            const t = i18n[lang];
+
+            // Buttons state
+            if (lang === 'tr') {
+                document.getElementById('langTR').className = "px-3 py-1 text-xs font-semibold rounded-lg transition-all bg-white text-black shadow-md";
+                document.getElementById('langEN').className = "px-3 py-1 text-xs font-semibold rounded-lg transition-all text-zinc-400 hover:text-white";
+            } else {
+                document.getElementById('langEN').className = "px-3 py-1 text-xs font-semibold rounded-lg transition-all bg-white text-black shadow-md";
+                document.getElementById('langTR').className = "px-3 py-1 text-xs font-semibold rounded-lg transition-all text-zinc-400 hover:text-white";
+            }
+
+            // Labels translation
+            document.getElementById('formTitle').textContent = t.title;
+            document.getElementById('formSubtitle').textContent = t.subtitle;
+            document.getElementById('stepLabel1').textContent = t.step1;
+            document.getElementById('stepLabel2').textContent = t.step2;
+            document.getElementById('stepLabel3').textContent = t.step3;
+
+            document.getElementById('lblFullName').textContent = t.fullName;
+            document.getElementById('lblCity').textContent = t.city;
+            document.getElementById('city').placeholder = t.cityPlaceholder;
+            document.getElementById('lblPhone').textContent = t.phone;
+            document.getElementById('lblEmail').textContent = t.email;
+
+            document.getElementById('lblSummaryTitle').textContent = t.summaryTitle;
+            document.getElementById('sumLblName').textContent = t.sumName;
+            document.getElementById('sumLblCity').textContent = t.sumCity;
+            document.getElementById('sumLblPhone').textContent = t.sumPhone;
+            document.getElementById('sumLblEmail').textContent = t.sumEmail;
+
+            document.getElementById('lblTerms').textContent = t.terms;
+            document.getElementById('btnPrevText').textContent = t.btnPrev;
+            document.getElementById('btnNextText').textContent = t.btnNext;
+            document.getElementById('btnSubmitText').textContent = t.btnSubmit;
+            document.getElementById('marqueeTitle').textContent = t.marqueeTitle;
+        }
+
+        // --- ANIMATED PARTICLE CANVAS ENGINE ---
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let particlesArray = [];
+        const numberOfParticles = 75;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = (Math.random() - 0.5) * 0.8;
+                this.speedY = (Math.random() - 0.5) * 0.8;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+            }
+
+            draw() {
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particlesArray = [];
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        function connectParticles() {
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    const dx = particlesArray[a].x - particlesArray[b].x;
+                    const dy = particlesArray[a].y - particlesArray[b].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 120) {
+                        const opacity = 1 - (distance / 120);
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${opacity * 0.15})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
+            connectParticles();
+            requestAnimationFrame(animateParticles);
+        }
+
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            initParticles();
+        });
+
+        // Initialize App on Window Load
+        window.onload = function() {
+            resizeCanvas();
+            initParticles();
+            animateParticles();
+            updateStepUI();
+        };
+    </script>
+</body>
+</html>
