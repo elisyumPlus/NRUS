@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AirPods 4 - 3D Ürün İnceleme</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Model Viewer (Kendi 3D Dosyanızı Oynatmak İçin) -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+
+    <style>
+        body {
+            background-color: #090d16;
+            color: #f3f4f6;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+        .glass {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-modal {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+        model-viewer {
+            width: 100%;
+            height: 380px;
+            --poster-color: transparent;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <!-- Header -->
+    <header class="border-b border-gray-800/60 p-4 sticky top-0 z-10 glass">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold tracking-wider text-cyan-400">3D STORE</h1>
+            <span class="text-xs px-2.5 py-1 rounded-full bg-cyan-950 text-cyan-400 border border-cyan-800/50">Stokta Var</span>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 py-12 flex-grow flex flex-col items-center justify-center">
+        <div class="text-center mb-10">
+            <h2 class="text-3xl sm:text-4xl font-extrabold mb-2">AirPods 4</h2>
+            <p class="text-gray-400 text-sm">3D Modeli kendi sunucunuzdan incelemek için tıklayın.</p>
+        </div>
+
+        <!-- Ürün Kartı -->
+        <div onclick="openModal()" class="glass rounded-2xl p-6 max-w-sm w-full cursor-pointer hover:border-cyan-500/50 transition-all duration-300 hover:scale-[1.02] group shadow-2xl">
+            <div class="bg-gray-900/60 rounded-xl p-8 mb-6 flex items-center justify-center relative overflow-hidden">
+                <img src="https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/MTJV3?wid=1144&hei=1144&fmt=jpeg&qlt=90&.v=1694014871985" 
+                     alt="AirPods 4 Önizleme" 
+                     class="w-48 h-48 object-contain group-hover:scale-105 transition-transform duration-300">
+                <span class="absolute bottom-3 right-3 bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-[10px] px-2 py-0.5 rounded-full font-medium">
+                    3D Modeli Gör
+                </span>
+            </div>
+            <div class="flex justify-between items-start">
+                <div>
+                    <h3 class="font-semibold text-lg text-white group-hover:text-cyan-400 transition-colors">AirPods 4</h3>
+                    <p class="text-xs text-gray-400 mt-1">Yerel 3D Model Entegrasyonu</p>
+                </div>
+                <span class="text-lg font-bold text-cyan-400">₺5.779</span>
+            </div>
+            <button class="w-full mt-5 py-2.5 bg-cyan-500/10 hover:bg-cyan-500 text-cyan-400 hover:text-black font-medium text-sm rounded-lg border border-cyan-500/30 transition-all duration-200">
+                3D İncele & Detaylar
+            </button>
+        </div>
+    </main>
+
+    <!-- Ürün Detay Popup (Yerel GLB Dosyası İle) -->
+    <div id="productModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="glass-modal rounded-2xl max-w-2xl w-full p-6 relative shadow-2xl transform transition-all max-h-[90vh] overflow-y-auto">
+            
+            <!-- Kapatma Butonu -->
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 rounded-lg hover:bg-gray-800/50 transition-colors z-10">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+
+            <!-- Modal İçeriği -->
+            <div class="flex flex-col gap-4">
+                
+                <!-- Yerel 3D Model Görünümü (model-viewer) -->
+                <div class="bg-black/60 rounded-xl overflow-hidden border border-gray-800 p-2">
+                    <model-viewer 
+                        src="airpods.glb" 
+                        alt="AirPods 4 3D Modeli" 
+                        camera-controls 
+                        auto-rotate 
+                        shadow-intensity="1"
+                        ar>
+                    </model-viewer>
+                </div>
+
+                <div class="flex justify-between items-center mt-2">
+                    <div>
+                        <h3 class="text-2xl font-bold text-white">AirPods 4</h3>
+                        <p class="text-xs text-gray-400">Fare veya dokunmatik ekran ile 360° çevirebilirsiniz.</p>
+                    </div>
+                    <p class="text-cyan-400 text-2xl font-semibold">₺5.779</p>
+                </div>
+
+                <div class="space-y-2 border-t border-gray-800 pt-4 text-sm text-gray-300">
+                    <div class="flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 bg-cyan-400 rounded-full"></span>
+                        <span>Yenilenmiş akustik mimari ve H2 çip performansı</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 bg-cyan-400 rounded-full"></span>
+                        <span>Kişiselleştirilmiş Uzamsal Ses ve dinamik kafa izleme</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 bg-cyan-400 rounded-full"></span>
+                        <span>Şarj kutusu ile toplam 30 saate kadar dinleme süresi</span>
+                    </div>
+                </div>
+
+                <div class="flex gap-3 mt-4">
+                    <button class="flex-1 py-3 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-xl transition-colors">
+                        Sipariş Ver
+                    </button>
+                    <button onclick="closeModal()" class="px-5 py-3 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl transition-colors">
+                        Kapat
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800/60 p-4 text-center text-xs text-gray-500">
+        © 2026 AirPods Store. GitHub Pages üzerinde barındırılmaktadır.
+    </footer>
+
+    <!-- JavaScript Kontrolleri -->
+    <script>
+        function openModal() {
+            const modal = document.getElementById('productModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('productModal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('productModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
